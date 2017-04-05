@@ -25,7 +25,8 @@
             "explorer/context": [
                 {
                     "command": "extension.blueprint",
-                    "title": "New File From Template"
+                    "title": "New File from Template",
+                    "group": "navigation"
                 }
             ]
         },
