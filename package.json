@@ -1,8 +1,8 @@
 {
-    "name": "conductor",
-    "displayName": "conductor",
-    "description": "Easily files from templates in Visual Code",
-    "version": "0.0.1",
+    "name": "blueprint",
+    "displayName": "Blueprint - New Files and Folder of Files from Templates",
+    "description": "Easily create files and folder of files from templates in Visual Studio Code",
+    "version": "0.1.0",
     "publisher": "reesemclean",
     "engines": {
         "vscode": "^1.10.0"
@@ -11,34 +11,34 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.conductor"
+        "onCommand:extension.blueprint"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.conductor",
+                "command": "extension.blueprint",
                 "title": "New File From Template"
             }
         ],
         "menus": {
             "explorer/context": [
                 {
-                    "command": "extension.conductor",
+                    "command": "extension.blueprint",
                     "title": "New File From Template"
                 }
             ]
         },
         "configuration": {
             "type": "object",
-            "title": "Conductor Configuration",
+            "title": "Blueprint Configuration",
             "properties": {
-                "conductor.templatesPath": {
+                "blueprint.templatesPath": {
                     "type": [
                         "string"
                     ],
-                    "default": "conductor-templates",
-                    "description": "Where your conductor templates are stored relative to your workspace root path. Defaults to ./conductor-templates"
+                    "default": "blueprint-templates",
+                    "description": "Where your Blueprint templates are stored relative to your workspace root path. Defaults to ./blueprint-templates"
                 }
             }
         }

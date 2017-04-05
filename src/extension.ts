@@ -14,7 +14,7 @@ const MANIFEST_FILE_NAME = 'manifest.json';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    let disposable = vscode.commands.registerCommand('extension.conductor', (e: vscode.Uri) => {
+    let disposable = vscode.commands.registerCommand('extension.blueprint', (e: vscode.Uri) => {
 
         let directoryPath = e.fsPath ? e.fsPath : vscode.workspace.rootPath;
 
@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
             directoryPath = path.dirname(directoryPath);
         }
 
-        const templateFolderPath = vscode.workspace.getConfiguration('conductor').get('templatesPath');
+        const templateFolderPath = vscode.workspace.getConfiguration('blueprint').get('templatesPath');
         const controller = new TemplateController();
 
         const data: TemplateControllerData = {

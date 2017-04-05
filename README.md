@@ -1,6 +1,6 @@
-# constructor-angular README
+# Blueprint README
 
-This is the README for your extension "constructor-angular". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "blueprint". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
