@@ -144,7 +144,7 @@ export class TemplateController {
         const files = fs
             .readdirSync(templateFolderPath)
             .filter(f => !fs.statSync(templateFolderPath + "/" + f).isDirectory())
-            .filter(f => f !== 'manifest.json');
+            .filter(f => f !== MANIFEST_FILE_NAME);
         return files;
     }
 
