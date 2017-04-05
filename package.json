@@ -18,7 +18,7 @@
         "commands": [
             {
                 "command": "extension.blueprint",
-                "title": "Files: New File from Template"
+                "title": "New File from Template",
             }
         ],
         "menus": {
