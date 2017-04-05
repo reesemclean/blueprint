@@ -9,6 +9,8 @@ import * as mkdirp from 'mkdirp';
 import * as handlebars from 'handlebars';
 
 const MANIFEST_FILE_NAME = 'manifest.json';
+const README_URL = 'https://github.com/reesemclean/blueprint';
+const ERROR_SETUP_MESSAGE_PREFIX = '[Blueprint Setup]';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -36,7 +38,11 @@ export function activate(context: vscode.ExtensionContext) {
             .showTemplatePickerDialog(data)
             .then(value => controller.showNameInputDialog(value))
             .then(value => controller.createFiles(value))
-            .catch(error => vscode.window.showErrorMessage(error.message ? error.message : 'There was a problem creating your file(s).'));
+            .catch(error => {
+                const message: string = error.message ? error.message : 'There was a problem creating your file(s).';
+                const isModal = message.startsWith(ERROR_SETUP_MESSAGE_PREFIX);
+                vscode.window.showErrorMessage(error.message ? error.message : 'There was a problem creating your file(s).', { modal: isModal });
+            });
 
     });
 
@@ -75,9 +81,23 @@ export class TemplateController {
 
     public showTemplatePickerDialog(data: TemplateControllerData): Promise<TemplateControllerData> {
         return new Promise((resolve, reject) => {
+
+            let templateNames: string[];
+            try {
+                templateNames = this.availableTemplateNames(data.templateFolderPath)
+            } catch (error) {
+                reject(new Error(`${ERROR_SETUP_MESSAGE_PREFIX} Could not find folder: ${data.templateFolderPath}. Please see ${README_URL} for information on setting up Blueprint in your project.`));
+                return;
+            }
+
+            if (templateNames.length === 0) {
+                reject(new Error(`${ERROR_SETUP_MESSAGE_PREFIX} No templates found in: ${data.templateFolderPath}. Please see ${README_URL} for information on setting up Blueprint in your project.`));
+                return;
+            }
+
             const prompt = "Which template would you like to use?";
 
-            vscode.window.showQuickPick(this.availableTemplateNames(data.templateFolderPath)).then(
+            vscode.window.showQuickPick(templateNames).then(
                 (value) => {
                     resolve(Object.assign({}, data, {
                         templateName: value,
@@ -101,7 +121,7 @@ export class TemplateController {
             }).then(
                 (value) => {
                     if (!value) {
-                        reject('No Name Given');
+                        reject(new Error('Unable to create file(s): No Name Given'));
                     }
                     const pascalCaseValue = _.chain(value).camelCase().upperFirst().value()
                     resolve(Object.assign({}, data, {
