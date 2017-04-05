@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     let disposable = vscode.commands.registerCommand('extension.blueprint', (e: vscode.Uri) => {
 
-        let directoryPath = e.fsPath ? e.fsPath : vscode.workspace.rootPath;
+        let directoryPath = (e && e.fsPath) ? e.fsPath : vscode.workspace.rootPath;
 
         if (!fs.statSync(directoryPath).isDirectory()) {
             directoryPath = path.dirname(directoryPath);
