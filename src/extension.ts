@@ -6,20 +6,15 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
+import * as handlebars from 'handlebars';
+
+const MANIFEST_FILE_NAME = 'manifest.json';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "constructor-angular" is now active!');
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.newAngularComponent', (e: vscode.Uri) => {
-        // The code you place here will be executed every time your command is executed
+    let disposable = vscode.commands.registerCommand('extension.conductor', (e: vscode.Uri) => {
 
         let directoryPath = e.fsPath ? e.fsPath : vscode.workspace.rootPath;
 
@@ -27,11 +22,21 @@ export function activate(context: vscode.ExtensionContext) {
             directoryPath = path.dirname(directoryPath);
         }
 
+        const templateFolderPath = vscode.workspace.getConfiguration('conductor').get('templatesPath');
         const controller = new TemplateController();
 
-        controller.showComponentNameDialog()
-            .then(value => controller.createComponentFolder(value, directoryPath))
-            .catch(error => vscode.window.showErrorMessage(error.message ? error.message : 'There was a problem creating your component.'));
+        const data: TemplateControllerData = {
+            templateFolderPath: `${vscode.workspace.rootPath}/${templateFolderPath}`,
+            pathToCreateAt: directoryPath,
+            inputName: null,
+            templateName: null,
+        }
+
+        controller
+            .showTemplatePickerDialog(data)
+            .then(value => controller.showNameInputDialog(value))
+            .then(value => controller.createFiles(value))
+            .catch(error => vscode.window.showErrorMessage(error.message ? error.message : 'There was a problem creating your file(s).'));
 
     });
 
@@ -42,12 +47,53 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
+export interface TemplateContextInterface {
+    nameKebabCase: string;
+    nameSnakeCase: string;
+    namePascalCase: string;
+    nameCamelCase: string;
+}
+
+export interface TemplateControllerData {
+    templateFolderPath: string;
+    pathToCreateAt: string;
+    inputName: string | null;
+    templateName: string | null;
+}
+
+export interface TemplateManifestOptions {
+    suffixesToIgnoreInInput: string[];
+    createFilesInFolderWithPattern: string | null
+}
+
+const defaultManifestOptions = {
+    suffixesToIgnoreInInput: [],
+    createFilesInFolderWithPattern: null
+}
+
 export class TemplateController {
 
-    public showComponentNameDialog(): Promise<string> {
+    public showTemplatePickerDialog(data: TemplateControllerData): Promise<TemplateControllerData> {
+        return new Promise((resolve, reject) => {
+            const prompt = "Which template would you like to use?";
+
+            vscode.window.showQuickPick(this.availableTemplateNames(data.templateFolderPath)).then(
+                (value) => {
+                    resolve(Object.assign({}, data, {
+                        templateName: value,
+                    }))
+                },
+                (errorReason) => {
+                    reject(errorReason);
+                }
+            )
+        });
+    }
+
+    public showNameInputDialog(data: TemplateControllerData): Promise<TemplateControllerData> {
         return new Promise((resolve, reject) => {
 
-            const prompt = 'What is the name of the new component?';
+            const prompt = 'Name';
 
             vscode.window.showInputBox({
                 prompt: prompt,
@@ -55,10 +101,12 @@ export class TemplateController {
             }).then(
                 (value) => {
                     if (!value) {
-                        reject('No Component Name Given');
+                        reject('No Name Given');
                     }
                     const pascalCaseValue = _.chain(value).camelCase().upperFirst().value()
-                    resolve(pascalCaseValue);
+                    resolve(Object.assign({}, data, {
+                        inputName: pascalCaseValue
+                    }));
                 },
                 (errorReason) => {
                     reject(errorReason);
@@ -67,33 +115,102 @@ export class TemplateController {
 
     }
 
-    public createComponentFolder(componentName: string, directoryPath: string): Promise<boolean> {
+    public availableTemplateNames(templatesFolderPath: string): string[] {
+        const templateDirectories = fs.readdirSync(templatesFolderPath).filter(f => fs.statSync(templatesFolderPath + "/" + f).isDirectory())
+        return templateDirectories;
+    }
+
+    public templateFileNames(templateFolderPath: string): string[] {
+        const files = fs
+            .readdirSync(templateFolderPath)
+            .filter(f => !fs.statSync(templateFolderPath + "/" + f).isDirectory())
+            .filter(f => f !== 'manifest.json');
+        return files;
+    }
+
+    public templateManifest(templateFolderPath: string): TemplateManifestOptions | null {
+
+        try {
+            const rawManifestContent = fs.readFileSync(`${templateFolderPath}/${MANIFEST_FILE_NAME}`, "utf8");
+
+            if (!rawManifestContent) { return defaultManifestOptions; }
+
+            const object = JSON.parse(rawManifestContent);
+            if (object) {
+                return Object.assign({}, defaultManifestOptions, object);
+            }
+
+            return defaultManifestOptions;
+        } catch (e) {
+            return defaultManifestOptions;
+        }
+    }
+
+    public templateContext(name: string): TemplateContextInterface {
+        return {
+            nameKebabCase: _.kebabCase(name),
+            nameCamelCase: _.camelCase(name),
+            namePascalCase: _.chain(name).camelCase().upperFirst().value(),
+            nameSnakeCase: _.snakeCase(name)
+        }
+    }
+
+    public createFiles(data: TemplateControllerData): Promise<boolean> {
 
         return new Promise((resolve, reject) => {
 
-            let nameWithoutComponent = componentName;
+            const templateDirectory = `${data.templateFolderPath}/${data.templateName}`;
+            const options = this.templateManifest(templateDirectory);
 
-            const componentString = 'Component';
-            if (componentName.endsWith(componentString)) {
-                nameWithoutComponent.slice(0, nameWithoutComponent.length - componentString.length);
+            let nameToUse = data.inputName;
+
+            for (let suffixToIgnore of options.suffixesToIgnoreInInput) {
+                if (nameToUse.toLowerCase().endsWith(suffixToIgnore.toLowerCase())) {
+                    nameToUse = nameToUse.slice(0, nameToUse.length - suffixToIgnore.length);
+                }
             }
 
-            const componentDirectoryPath = directoryPath + '/' + nameWithoutComponent;
+            const templateContext = this.templateContext(nameToUse);
 
-            const pathExists = fs.existsSync(componentDirectoryPath);
+            let directoryPathForFiles = data.pathToCreateAt;
+
+            if (options.createFilesInFolderWithPattern) {
+                const folderName = options.createFilesInFolderWithPattern
+                    .replace('__kebabcasename__', templateContext.nameKebabCase)
+                    .replace('__pascalcasename__', templateContext.namePascalCase)
+                    .replace('__snakecasename__', templateContext.nameSnakeCase)
+                    .replace('__camalcasename__', templateContext.nameCamelCase);
+                directoryPathForFiles = data.pathToCreateAt + '/' + folderName;
+            }
+
+            const pathExists = fs.existsSync(directoryPathForFiles);
 
             if (!pathExists) {
-                mkdirp.sync(componentDirectoryPath);
+                mkdirp.sync(directoryPathForFiles);
             }
 
-            fs.appendFile(componentDirectoryPath + '/test.js', 'Test ContentMAno', (error) => {
-                if (error) { 
-                    reject(error);
-                    return;
-                }
+            this.templateFileNames(templateDirectory).forEach(templateFileName => {
 
-                resolve(true);
-                return;
+                const fileNameToUse = templateFileName
+                    .replace('__kebabcasename__', templateContext.nameKebabCase)
+                    .replace('__pascalcasename__', templateContext.namePascalCase)
+                    .replace('__snakecasename__', templateContext.nameSnakeCase)
+                    .replace('__camalcasename__', templateContext.nameCamelCase);
+                const filePath = `${directoryPathForFiles}/${fileNameToUse}`;
+                const rawTemplateContent = fs.readFileSync(`${data.templateFolderPath}/${data.templateName}/${templateFileName}`, "utf8");
+                const template = handlebars.compile(rawTemplateContent);
+                const content = template(templateContext);
+
+                fs.appendFile(filePath, content, (error) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    resolve(true);
+                    return;
+                });
+
             });
 
         });

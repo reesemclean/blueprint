@@ -1,7 +1,7 @@
 {
-    "name": "constructor-angular",
-    "displayName": "constructor-angular",
-    "description": "Easily create angular components and services in Visual Code",
+    "name": "conductor",
+    "displayName": "conductor",
+    "description": "Easily files from templates in Visual Code",
     "version": "0.0.1",
     "publisher": "reesemclean",
     "engines": {
@@ -11,23 +11,36 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.newAngularComponent"
+        "onCommand:extension.conductor"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.newAngularComponent",
-                "title": "New File: Angular Component"
+                "command": "extension.conductor",
+                "title": "New File From Template"
             }
         ],
         "menus": {
             "explorer/context": [
                 {
-                    "command": "extension.newAngularComponent",
-                    "title": "Create Angular Component"
+                    "command": "extension.conductor",
+                    "title": "New File From Template"
                 }
             ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Conductor Configuration",
+            "properties": {
+                "conductor.templatesPath": {
+                    "type": [
+                        "string"
+                    ],
+                    "default": "conductor-templates",
+                    "description": "Where your conductor templates are stored relative to your workspace root path. Defaults to ./conductor-templates"
+                }
+            }
         }
     },
     "scripts": {
@@ -44,7 +57,7 @@
         "vscode": "^1.0.0"
     },
     "dependencies": {
-        "lodash": "^4.17.4",
-        "path": "^0.12.7"
+        "handlebars": "^4.0.6",
+        "lodash": "^4.17.4"
     }
 }
