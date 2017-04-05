@@ -1,6 +1,6 @@
 {
     "name": "blueprint",
-    "displayName": "Blueprint - New Files and Folder of Files from Templates",
+    "displayName": "Blueprint - New Files and Folders of Files from Templates",
     "description": "Easily create files and folder of files from templates in Visual Studio Code",
     "version": "0.1.0",
     "publisher": "reesemclean",
