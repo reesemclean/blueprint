@@ -23,7 +23,7 @@ Create custom file templates for your project.
 ## Extension Settings
 
 ### Templates Path
-To change the default storage location for Blueprint templates are stored, navigate to `settings.json` (`⌘,`) under Code preferences and change the `blueprint.templatesPath` setting
+To change the default storage location for where Blueprint templates are stored, navigate to `settings.json` (`⌘,`) under Code preferences and change the `blueprint.templatesPath` setting
 
 Example:
 
