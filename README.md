@@ -5,6 +5,15 @@ Create custom file templates for your project.
 * File GitHub [issues](https://github.com/reesemclean/blueprint/issues/new) anytime you run into unexpected situations/bugs.
 * Fork [our project](https://github.com/reesemclean/blueprint), send us PRs!
 
+## Usage
+### Create template group and files
+* To do....
+### Create from template
+* Right click on the file or folder in the explorer
+* Select "New file from template"
+* Enter a name
+
+![Use Alt](https://zippy.gfycat.com/HalfBruisedHalcyon.gif)
 
 ## Features
 
