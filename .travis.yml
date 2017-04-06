@@ -12,6 +12,7 @@ before_install:
     fi
 
 before_script:
+  - npm install -g yarn
   - yarn install
   - yarn run vscode:prepublish
 
