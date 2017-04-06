@@ -2,7 +2,7 @@
 
 Create custom file templates for your project.
 
-* File GitHub [issues](https://github.com/reesemclean/blueprint/issues/new) anytime you ran into unexpected situations/bugs.
+* File GitHub [issues](https://github.com/reesemclean/blueprint/issues/new) anytime you run into unexpected situations/bugs.
 * Fork [our project](https://github.com/reesemclean/blueprint), send us PRs!
 
 
