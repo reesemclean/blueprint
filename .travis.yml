@@ -1,5 +1,8 @@
 sudo: false
 
+node_js:
+  - 6
+
 os:
   - osx
   - linux
