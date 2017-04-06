@@ -1,4 +1,4 @@
-# Blueprint README ![Build Status](https://travis-ci.org/reesemclean/blueprint.svg?branch=master)
+# Blueprint ![Build Status](https://travis-ci.org/reesemclean/blueprint.svg?branch=master)
 
 Create custom file templates for your project.
 
@@ -6,39 +6,31 @@ Create custom file templates for your project.
 * Fork [our project](https://github.com/reesemclean/blueprint), send us PRs!
 
 ## Usage
-### Create template group and files
-* To do....
-### Create from template
+
+### Add templates
+* Create a template group by adding a new folder under the blueprint templates storage folder
+* Add a template to the group by creating a new file
+
+![Use Alt](https://zippy.gfycat.com/EnormousResponsibleGander.gif)
+
+### Create something from a template
 * Right click on the file or folder in the explorer
 * Select "New file from template"
 * Enter a name
 
 ![Use Alt](https://zippy.gfycat.com/HalfBruisedHalcyon.gif)
 
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Templates Path
+To change the default storage location for Blueprint templates are stored, navigate to `settings.json` (`⌘,`) under Code preferences and change the `blueprint.templatesPath` setting
 
-For example:
+Example:
 
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+```less
+  // Where your Blueprint templates are stored relative to your workspace root path. Defaults to ./blueprint-templates
+  "blueprint.templatesPath": "blueprint-templates",
+```
 
 ## Known Issues
 
