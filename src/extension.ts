@@ -196,10 +196,10 @@ export class TemplateController {
 
             if (options.createFilesInFolderWithPattern) {
                 const folderName = options.createFilesInFolderWithPattern
-                    .replace('__kebabcasename__', templateContext.nameKebabCase)
-                    .replace('__pascalcasename__', templateContext.namePascalCase)
-                    .replace('__snakecasename__', templateContext.nameSnakeCase)
-                    .replace('__camalcasename__', templateContext.nameCamelCase);
+                    .replace('__namekebabcase__', templateContext.nameKebabCase)
+                    .replace('__namepascalcase__', templateContext.namePascalCase)
+                    .replace('__namesnakecase__', templateContext.nameSnakeCase)
+                    .replace('__namecamalcase__', templateContext.nameCamelCase);
                 directoryPathForFiles = data.pathToCreateAt + '/' + folderName;
             }
 
@@ -212,10 +212,10 @@ export class TemplateController {
             this.templateFileNames(templateDirectory).forEach(templateFileName => {
 
                 const fileNameToUse = templateFileName
-                    .replace('__kebabcasename__', templateContext.nameKebabCase)
-                    .replace('__pascalcasename__', templateContext.namePascalCase)
-                    .replace('__snakecasename__', templateContext.nameSnakeCase)
-                    .replace('__camalcasename__', templateContext.nameCamelCase);
+                    .replace('__namekebabcase__', templateContext.nameKebabCase)
+                    .replace('__namepascalcase__', templateContext.namePascalCase)
+                    .replace('__namesnakecase__', templateContext.nameSnakeCase)
+                    .replace('__namecamalcase__', templateContext.nameCamelCase);
                 const filePath = `${directoryPathForFiles}/${fileNameToUse}`;
                 const rawTemplateContent = fs.readFileSync(`${data.templateFolderPath}/${data.templateName}/${templateFileName}`, "utf8");
                 const template = handlebars.compile(rawTemplateContent);
