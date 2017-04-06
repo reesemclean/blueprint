@@ -1,4 +1,6 @@
-# Blueprint README ![Build Status](https://travis-ci.org/reesemclean/blueprint.svg?branch=master)
+# Blueprint README
+
+![Build Status](https://travis-ci.org/reesemclean/blueprint.svg?branch=master)
 
 Create custom file templates for your project.
 
