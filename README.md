@@ -7,13 +7,18 @@ Create custom file templates for your project.
 
 ## Usage
 
+### Setup where your Blueprint templates will be stored
+* Create a folder anywhere in your project matching the templates path setting. By default, the path is set to `blueprint-templates`. (See [Extension Settings](#Templates-Path) if you would like to change this)
+
+![Use Alt](https://zippy.gfycat.com/BrokenAdorableKinglet.gif)
+
 ### Add templates
 * Create a template group by adding a new folder under the blueprint templates storage folder
 * Add a template to the group by creating a new file
 
 ![Use Alt](https://zippy.gfycat.com/EnormousResponsibleGander.gif)
 
-### Create something from a template
+### Create from a template
 * Right click on the file or folder in the explorer
 * Select "New file from template"
 * Enter a name
@@ -23,7 +28,7 @@ Create custom file templates for your project.
 ## Extension Settings
 
 ### Templates Path
-To change the default storage location for where Blueprint templates are stored, navigate to `settings.json` (`⌘,`) under Code preferences and change the `blueprint.templatesPath` setting
+To change the default storage location for where Blueprint templates are stored, navigate to `settings.json` or `⌘,` under Visual Studio Code preferences and change the `blueprint.templatesPath` setting
 
 Example:
 
@@ -31,6 +36,11 @@ Example:
   // Where your Blueprint templates are stored relative to your workspace root path. Defaults to ./blueprint-templates
   "blueprint.templatesPath": "blueprint-templates",
 ```
+
+## Examples
+Example templates can be found here: [blueprint-examples](https://github.com/reesemclean/blueprint-examples)
+
+We will continue to add new templates that we think may be helpful to use!
 
 ## Known Issues
 
@@ -43,28 +53,3 @@ Users appreciate release notes as you update your extension.
 ### 1.0.0
 
 Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
