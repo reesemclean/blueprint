@@ -127,7 +127,6 @@ export class TemplateController {
                 validateInput: (value) => value ? null : 'Please enter a name'
             }).then(
                 (value) => {
-                    if (value === undefined) return;
                     if (value === '') {
                         reject(new Error('Unable to create file(s): No Name Given'));
                     }
