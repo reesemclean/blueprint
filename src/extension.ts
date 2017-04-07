@@ -102,6 +102,8 @@ export class TemplateController {
                 ignoreFocusOut: true
             }).then(
                 (value) => {
+                    if (!value) { return }
+
                     resolve(Object.assign({}, data, {
                         templateName: value,
                     }))
@@ -109,7 +111,7 @@ export class TemplateController {
                 (errorReason) => {
                     reject(errorReason);
                 }
-            )
+                )
         });
     }
 
@@ -121,10 +123,11 @@ export class TemplateController {
             vscode.window.showInputBox({
                 prompt: prompt,
                 ignoreFocusOut: true,
-                value: ''
+                value: '',
+                validateInput: (value) => value ? null : 'Please enter a name'
             }).then(
                 (value) => {
-                    if (!value) {
+                    if (value === '') {
                         reject(new Error('Unable to create file(s): No Name Given'));
                     }
                     const pascalCaseValue = _.chain(value).camelCase().upperFirst().value()
