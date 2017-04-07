@@ -95,9 +95,12 @@ export class TemplateController {
                 return;
             }
 
-            const prompt = "Which template would you like to use?";
+            const placeHolder = "Which template would you like to use?";
 
-            vscode.window.showQuickPick(templateNames).then(
+            vscode.window.showQuickPick(templateNames, {
+                placeHolder: placeHolder,
+                ignoreFocusOut: true
+            }).then(
                 (value) => {
                     resolve(Object.assign({}, data, {
                         templateName: value,
@@ -117,6 +120,7 @@ export class TemplateController {
 
             vscode.window.showInputBox({
                 prompt: prompt,
+                ignoreFocusOut: true,
                 value: ''
             }).then(
                 (value) => {
