@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as constants from './constants';
 
 import { FileCreatorInputData } from './fileCreator';
+import { CancelError } from './customErrors';
 
 export class InputController {
 
@@ -60,7 +61,12 @@ export class InputController {
                 ignoreFocusOut: true
             }).then(
                 (value) => {
-                    if (!value) return;
+                    if (value === undefined) {
+                        return Promise.reject(new CancelError('escape was pressed'));
+                    }
+                    else if (!value) {
+                        return Promise.reject(new Error('a different error'));
+                    }
                     resolve(value);
                 },
                 (errorReason) => {
@@ -78,8 +84,10 @@ export class InputController {
                 value: ''
             }).then(
                 (value) => {
-                    if (value === undefined) return;
-                    if (value === '') {
+                    if (value === undefined) {
+                        return Promise.reject(new CancelError('escape was pressed'));
+                    }
+                    if (!value) {
                         reject(new Error('Unable to create file(s): No Name Given'));
                     }
                     const pascalCaseValue = _.chain(value).camelCase().upperFirst().value()
