@@ -60,6 +60,7 @@ export class InputController {
                 ignoreFocusOut: true
             }).then(
                 (value) => {
+                    if (!value) return;
                     resolve(value);
                 },
                 (errorReason) => {
@@ -77,7 +78,8 @@ export class InputController {
                 value: ''
             }).then(
                 (value) => {
-                    if (!value) {
+                    if (value === undefined) return;
+                    if (value === '') {
                         reject(new Error('Unable to create file(s): No Name Given'));
                     }
                     const pascalCaseValue = _.chain(value).camelCase().upperFirst().value()
