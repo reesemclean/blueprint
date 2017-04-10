@@ -34,6 +34,14 @@ handlebars.registerHelper({
     }
 })
 
+function replaceName(stringToReplace: string, name: string) {
+    return stringToReplace
+        .replace('__kebabCase_name__', _.kebabCase(name))
+        .replace('__pascalCase_name__', _.chain(name).camelCase().upperFirst().value())
+        .replace('__snakeCase_name__', _.snakeCase(name))
+        .replace('__camelCase_name__', _.camelCase(name));
+}
+
 function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): string[] {
     const files = fs
         .readdirSync(templateFolderPath)
@@ -72,12 +80,7 @@ export class FileCreator {
             let directoryPathForFiles = this.data.pathToCreateAt;
 
             if (options.createFilesInFolderWithPattern) {
-                const folderName = options.createFilesInFolderWithPattern
-                //is this the right place to be doing the string conversions?
-                    .replace('__kebabCase_name__', _.kebabCase(templateContext.name))
-                    .replace('__pascalCase_name__', _.chain(templateContext.name).camelCase().upperFirst().value())
-                    .replace('__snakeCase_name__', _.snakeCase(templateContext.name))
-                    .replace('__camelCase_name__', _.camelCase(templateContext.name));
+                const folderName = replaceName(options.createFilesInFolderWithPattern, templateContext.name);
                 directoryPathForFiles = this.data.pathToCreateAt + '/' + folderName;
             }
 
@@ -89,12 +92,7 @@ export class FileCreator {
 
             getTemplateFileNamesAtTemplateDirectory(templateDirectory).forEach(templateFileName => {
 
-                const fileNameToUse = templateFileName
-                //should we create a function to do the conversions since this is the same code used above?
-                    .replace('__kebabCase_name__', _.kebabCase(templateContext.name))
-                    .replace('__pascalCase_name__', _.chain(templateContext.name).camelCase().upperFirst().value())
-                    .replace('__snakeCase_name__', _.snakeCase(templateContext.name))
-                    .replace('__camelCase_name__', _.camelCase(templateContext.name));
+                const fileNameToUse = replaceName(templateFileName, templateContext.name);
                 const filePath = `${directoryPathForFiles}/${fileNameToUse}`;
                 const rawTemplateContent = fs.readFileSync(`${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`, "utf8");
                 const template = handlebars.compile(rawTemplateContent);
