@@ -1,4 +1,4 @@
-'use strict'; //what does this mean?
+'use strict';
 
 export class CancelError extends Error {
     constructor(message) {

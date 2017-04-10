@@ -64,8 +64,8 @@ export class InputController {
                     if (value === undefined) {
                         return Promise.reject(new CancelError('escape was pressed'));
                     }
-                    else if (!value) {
-                        return Promise.reject(new Error('a different error'));
+                    if (!value) {
+                        return Promise.reject(new Error());
                     }
                     resolve(value);
                 },
