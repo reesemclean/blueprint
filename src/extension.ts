@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as constants from './constants';
 import { InputController } from './inputController';
 import { FileCreator } from './fileCreator';
+import { CancelError } from './customErrors';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -28,8 +29,11 @@ export function activate(context: vscode.ExtensionContext) {
                 return fileCreator.createFiles();
             })
             .catch(error => {
+                if (error instanceof CancelError) return;
+                
                 const message: string = error.message ? error.message : 'There was a problem creating your file(s).';
                 const isModal = message.startsWith(constants.ERROR_SETUP_MESSAGE_PREFIX);
+
                 vscode.window.showErrorMessage(error.message ? error.message : 'There was a problem creating your file(s).', { modal: isModal });
             });
 
