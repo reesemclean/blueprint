@@ -65,7 +65,7 @@ export class InputController {
                         return Promise.reject(new CancelError('escape was pressed'));
                     }
                     if (!value) {
-                        return Promise.reject(new Error());
+                        return Promise.reject(new Error('some unkown error'));
                     }
                     resolve(value);
                 },
