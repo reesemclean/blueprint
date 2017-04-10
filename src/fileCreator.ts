@@ -16,11 +16,23 @@ export interface FileCreatorInputData {
 }
 
 interface ITemplateContext {
-    nameKebabCase: string;
-    nameSnakeCase: string;
-    namePascalCase: string;
-    nameCamelCase: string;
+    name: string;
 }
+
+handlebars.registerHelper({
+    kebabCase: function (string) {
+        return _.kebabCase(string);
+    },
+    camelCase: function (string) {
+        return _.camelCase(string);
+    },
+    pascalCase: function (string) {
+        return _.chain(string).camelCase().upperFirst().value();
+    },
+    snakeCase: function (string) {
+        return _.snakeCase(string);
+    }
+})
 
 function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): string[] {
     const files = fs
@@ -33,13 +45,9 @@ function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): st
 
 function getTemplateContext(name: string): ITemplateContext {
     return {
-        nameKebabCase: _.kebabCase(name),
-        nameCamelCase: _.camelCase(name),
-        namePascalCase: _.chain(name).camelCase().upperFirst().value(),
-        nameSnakeCase: _.snakeCase(name)
+        name: name
     }
 }
-
 export class FileCreator {
 
     constructor(private data: FileCreatorInputData) { }
@@ -65,10 +73,11 @@ export class FileCreator {
 
             if (options.createFilesInFolderWithPattern) {
                 const folderName = options.createFilesInFolderWithPattern
-                    .replace('__namekebabcase__', templateContext.nameKebabCase)
-                    .replace('__namepascalcase__', templateContext.namePascalCase)
-                    .replace('__namesnakecase__', templateContext.nameSnakeCase)
-                    .replace('__namecamalcase__', templateContext.nameCamelCase);
+                //is this the right place to be doing the string conversions?
+                    .replace('__kebabCase_name__', _.kebabCase(templateContext.name))
+                    .replace('__pascalCase_name__', _.chain(templateContext.name).camelCase().upperFirst().value())
+                    .replace('__snakeCase_name__', _.snakeCase(templateContext.name))
+                    .replace('__camelCase_name__', _.camelCase(templateContext.name));
                 directoryPathForFiles = this.data.pathToCreateAt + '/' + folderName;
             }
 
@@ -81,10 +90,11 @@ export class FileCreator {
             getTemplateFileNamesAtTemplateDirectory(templateDirectory).forEach(templateFileName => {
 
                 const fileNameToUse = templateFileName
-                    .replace('__namekebabcase__', templateContext.nameKebabCase)
-                    .replace('__namepascalcase__', templateContext.namePascalCase)
-                    .replace('__namesnakecase__', templateContext.nameSnakeCase)
-                    .replace('__namecamalcase__', templateContext.nameCamelCase);
+                //should we create a function to do the conversions since this is the same code used above?
+                    .replace('__kebabCase_name__', _.kebabCase(templateContext.name))
+                    .replace('__pascalCase_name__', _.chain(templateContext.name).camelCase().upperFirst().value())
+                    .replace('__snakeCase_name__', _.snakeCase(templateContext.name))
+                    .replace('__camelCase_name__', _.camelCase(templateContext.name));
                 const filePath = `${directoryPathForFiles}/${fileNameToUse}`;
                 const rawTemplateContent = fs.readFileSync(`${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`, "utf8");
                 const template = handlebars.compile(rawTemplateContent);
