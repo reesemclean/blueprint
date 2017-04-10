@@ -65,7 +65,7 @@ export class InputController {
                         return Promise.reject(new CancelError('escape was pressed'));
                     }
                     if (!value) {
-                        return Promise.reject(new Error('some unkown error'));
+                        reject(new Error('Unable to create file(s): No Template Selected'));
                     }
                     resolve(value);
                 },
