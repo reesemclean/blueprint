@@ -4,6 +4,7 @@
     "description": "Easily create files and folder of files from templates in Visual Studio Code",
     "version": "0.1.0",
     "publisher": "reesemclean",
+    "license": "MIT",
     "engines": {
         "vscode": "^1.10.0"
     },
