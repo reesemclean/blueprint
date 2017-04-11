@@ -70,27 +70,49 @@ export class FileCreator {
                     .replace('__namesnakecase__', templateContext.nameSnakeCase)
                     .replace('__namecamalcase__', templateContext.nameCamelCase);
                 directoryPathForFiles = this.data.pathToCreateAt + '/' + folderName;
+
+                const pathExists = fs.existsSync(directoryPathForFiles);
+
+                if (pathExists) {
+                    reject(new Error(`Folder already exists at path: ${directoryPathForFiles}`));
+                    return;
+                }
+
             }
 
-            const pathExists = fs.existsSync(directoryPathForFiles);
-
-            if (!pathExists) {
-                mkdirp.sync(directoryPathForFiles);
-            }
-
-            getTemplateFileNamesAtTemplateDirectory(templateDirectory).forEach(templateFileName => {
-
+            const templateFileNames = getTemplateFileNamesAtTemplateDirectory(templateDirectory);
+            const filePaths = templateFileNames.map(templateFileName => {
                 const fileNameToUse = templateFileName
                     .replace('__namekebabcase__', templateContext.nameKebabCase)
                     .replace('__namepascalcase__', templateContext.namePascalCase)
                     .replace('__namesnakecase__', templateContext.nameSnakeCase)
                     .replace('__namecamalcase__', templateContext.nameCamelCase);
-                const filePath = `${directoryPathForFiles}/${fileNameToUse}`;
+                return `${directoryPathForFiles}/${fileNameToUse}`;
+            });
+
+            let conflictingFilePath: string;
+            for (let filePath of filePaths) {
+                if (fs.existsSync(filePath)) {
+                    conflictingFilePath = filePath;
+                    break;
+                }
+            }
+
+            if (conflictingFilePath) {
+                reject(new Error(`File already exists at path: ${conflictingFilePath}`));
+                return;
+            }
+
+            mkdirp.sync(directoryPathForFiles);
+
+            const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFileNames, filePaths);
+            Object.keys(templateFileNameToFilePathToCreateMapping).forEach(templateFileName => {
+
                 const rawTemplateContent = fs.readFileSync(`${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`, "utf8");
                 const template = handlebars.compile(rawTemplateContent);
                 const content = template(templateContext);
 
-                fs.appendFile(filePath, content, (error) => {
+                fs.appendFile(templateFileNameToFilePathToCreateMapping[templateFileName], content, (error) => {
                     if (error) {
                         reject(error);
                         return;
