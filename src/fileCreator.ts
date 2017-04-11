@@ -16,10 +16,30 @@ export interface FileCreatorInputData {
 }
 
 interface ITemplateContext {
-    nameKebabCase: string;
-    nameSnakeCase: string;
-    namePascalCase: string;
-    nameCamelCase: string;
+    name: string;
+}
+
+handlebars.registerHelper({
+    kebabCase: function (string) {
+        return _.kebabCase(string);
+    },
+    camelCase: function (string) {
+        return _.camelCase(string);
+    },
+    pascalCase: function (string) {
+        return _.chain(string).camelCase().upperFirst().value();
+    },
+    snakeCase: function (string) {
+        return _.snakeCase(string);
+    }
+})
+
+function replaceName(stringToReplace: string, name: string) {
+    return stringToReplace
+        .replace('__kebabCase_name__', _.kebabCase(name))
+        .replace('__pascalCase_name__', _.chain(name).camelCase().upperFirst().value())
+        .replace('__snakeCase_name__', _.snakeCase(name))
+        .replace('__camelCase_name__', _.camelCase(name));
 }
 
 function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): string[] {
@@ -33,13 +53,9 @@ function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): st
 
 function getTemplateContext(name: string): ITemplateContext {
     return {
-        nameKebabCase: _.kebabCase(name),
-        nameCamelCase: _.camelCase(name),
-        namePascalCase: _.chain(name).camelCase().upperFirst().value(),
-        nameSnakeCase: _.snakeCase(name)
+        name: name
     }
 }
-
 export class FileCreator {
 
     constructor(private data: FileCreatorInputData) { }
@@ -64,11 +80,7 @@ export class FileCreator {
             let directoryPathForFiles = this.data.pathToCreateAt;
 
             if (options.createFilesInFolderWithPattern) {
-                const folderName = options.createFilesInFolderWithPattern
-                    .replace('__namekebabcase__', templateContext.nameKebabCase)
-                    .replace('__namepascalcase__', templateContext.namePascalCase)
-                    .replace('__namesnakecase__', templateContext.nameSnakeCase)
-                    .replace('__namecamalcase__', templateContext.nameCamelCase);
+                const folderName = replaceName(options.createFilesInFolderWithPattern, templateContext.name);
                 directoryPathForFiles = this.data.pathToCreateAt + '/' + folderName;
 
                 const pathExists = fs.existsSync(directoryPathForFiles);
@@ -77,16 +89,11 @@ export class FileCreator {
                     reject(new Error(`Folder already exists at path: ${directoryPathForFiles}`));
                     return;
                 }
-
             }
 
             const templateFileNames = getTemplateFileNamesAtTemplateDirectory(templateDirectory);
             const filePaths = templateFileNames.map(templateFileName => {
-                const fileNameToUse = templateFileName
-                    .replace('__namekebabcase__', templateContext.nameKebabCase)
-                    .replace('__namepascalcase__', templateContext.namePascalCase)
-                    .replace('__namesnakecase__', templateContext.nameSnakeCase)
-                    .replace('__namecamalcase__', templateContext.nameCamelCase);
+                const fileNameToUse = replaceName(templateFileName, templateContext.name);
                 return `${directoryPathForFiles}/${fileNameToUse}`;
             });
 
