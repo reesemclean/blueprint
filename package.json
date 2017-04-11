@@ -10,6 +10,7 @@
     "categories": [
         "Other"
     ],
+    "repository": "https://github.com/reesemclean/blueprint",
     "activationEvents": [
         "onCommand:extension.blueprint"
     ],
