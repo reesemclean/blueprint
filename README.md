@@ -16,14 +16,14 @@ Create custom file templates for your project.
 * Create a template group by adding a new folder under the blueprint templates storage folder
 * Add a template to the group by creating a new file
 
-![Use Alt](https://zippy.gfycat.com/EnormousResponsibleGander.gif)
+![Use Alt](https://zippy.gfycat.com/UnitedUnequaledFlounder.gif)
 
 ### Create from a template
 * Right click on the file or folder in the explorer
 * Select "New file from template"
 * Enter a name
 
-![Use Alt](https://zippy.gfycat.com/HalfBruisedHalcyon.gif)
+![Use Alt](https://zippy.gfycat.com/AggravatingBreakableDwarfmongoose.gif)
 
 ## Extension Settings
 
