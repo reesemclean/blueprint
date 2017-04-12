@@ -8,7 +8,7 @@
     "engines": {
         "vscode": "^1.10.0"
     },
-    "icon": "artwork/icon_128_128.png",
+    "icon": "icon_128_128.png",
     "galleryBanner": {
         "color": "#fafafa",
         "theme": "light"
