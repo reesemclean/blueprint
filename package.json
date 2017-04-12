@@ -69,6 +69,7 @@
     },
     "dependencies": {
         "handlebars": "^4.0.6",
-        "lodash": "^4.17.4"
+        "lodash": "^4.17.4",
+        "mkdirp": "^0.5.1"
     }
 }
