@@ -46,6 +46,6 @@ We will continue to add new templates that we think may be helpful to use!
 
 ## Release Notes
 
-### 1.0.0
+### 1.1.0
 
-Initial release.
+Fixes missing dependency in initial release.
