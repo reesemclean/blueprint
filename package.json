@@ -2,7 +2,7 @@
     "name": "blueprint",
     "displayName": "Blueprint - New Files and Folders of Files from Templates",
     "description": "Easily create files and folder of files from templates in Visual Studio Code",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "publisher": "teamchilla",
     "license": "MIT",
     "engines": {
