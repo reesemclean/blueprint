@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-import * as fs from 'fs';
-import * as constants from './constants';
+import * as fs from "fs";
+import * as constants from "./constants";
 
 export interface ITemplateManifest {
     suffixesToIgnoreInInput: string[];
-    createFilesInFolderWithPattern: string | null
+    createFilesInFolderWithPattern: string | null;
 }
 
 const defaultTemplateManifest = {
     suffixesToIgnoreInInput: [],
-    createFilesInFolderWithPattern: null
-}
+    createFilesInFolderWithPattern: null,
+};
 
 export function getTemplateManifestAtTemplateDirectory(templateFolderPath: string): ITemplateManifest {
 

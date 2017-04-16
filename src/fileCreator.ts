@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import * as fs from 'fs';
-import * as mkdirp from 'mkdirp';
-import * as handlebars from 'handlebars';
-import * as _ from 'lodash';
+import * as fs from "fs";
+import * as handlebars from "handlebars";
+import * as _ from "lodash";
+import * as mkdirp from "mkdirp";
 
-import * as constants from './constants';
-import { getTemplateManifestAtTemplateDirectory } from './getTemplateManifest';
+import * as constants from "./constants";
+import { getTemplateManifestAtTemplateDirectory } from "./getTemplateManifest";
 
 export interface FileCreatorInputData {
     templateFolderPath: string;
@@ -20,41 +20,41 @@ interface ITemplateContext {
 }
 
 handlebars.registerHelper({
-    kebabCase: function (string) {
+    kebabCase: function(string) {
         return _.kebabCase(string);
     },
-    camelCase: function (string) {
+    camelCase: function(string) {
         return _.camelCase(string);
     },
-    pascalCase: function (string) {
+    pascalCase: function(string) {
         return _.chain(string).camelCase().upperFirst().value();
     },
-    snakeCase: function (string) {
+    snakeCase: function(string) {
         return _.snakeCase(string);
-    }
-})
+    },
+});
 
 function replaceName(stringToReplace: string, name: string) {
     return stringToReplace
-        .replace('__kebabCase_name__', _.kebabCase(name))
-        .replace('__pascalCase_name__', _.chain(name).camelCase().upperFirst().value())
-        .replace('__snakeCase_name__', _.snakeCase(name))
-        .replace('__camelCase_name__', _.camelCase(name));
+        .replace("__kebabCase_name__", _.kebabCase(name))
+        .replace("__pascalCase_name__", _.chain(name).camelCase().upperFirst().value())
+        .replace("__snakeCase_name__", _.snakeCase(name))
+        .replace("__camelCase_name__", _.camelCase(name));
 }
 
 function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): string[] {
     const files = fs
         .readdirSync(templateFolderPath)
-        .filter(f => !fs.statSync(templateFolderPath + "/" + f).isDirectory())
-        .filter(f => f !== constants.MANIFEST_FILE_NAME)
-        .filter(f => !f.startsWith('.'));
+        .filter((f) => !fs.statSync(templateFolderPath + "/" + f).isDirectory())
+        .filter((f) => f !== constants.MANIFEST_FILE_NAME)
+        .filter((f) => !f.startsWith("."));
     return files;
 }
 
 function getTemplateContext(name: string): ITemplateContext {
     return {
-        name: name
-    }
+        name,
+    };
 }
 export class FileCreator {
 
@@ -69,7 +69,7 @@ export class FileCreator {
 
             let nameToUse = this.data.inputName;
 
-            for (let suffixToIgnore of options.suffixesToIgnoreInInput) {
+            for (const suffixToIgnore of options.suffixesToIgnoreInInput) {
                 if (nameToUse.toLowerCase().endsWith(suffixToIgnore.toLowerCase())) {
                     nameToUse = nameToUse.slice(0, nameToUse.length - suffixToIgnore.length);
                 }
@@ -81,7 +81,7 @@ export class FileCreator {
 
             if (options.createFilesInFolderWithPattern) {
                 const folderName = replaceName(options.createFilesInFolderWithPattern, templateContext.name);
-                directoryPathForFiles = this.data.pathToCreateAt + '/' + folderName;
+                directoryPathForFiles = this.data.pathToCreateAt + "/" + folderName;
 
                 const pathExists = fs.existsSync(directoryPathForFiles);
 
@@ -92,13 +92,13 @@ export class FileCreator {
             }
 
             const templateFileNames = getTemplateFileNamesAtTemplateDirectory(templateDirectory);
-            const filePaths = templateFileNames.map(templateFileName => {
+            const filePaths = templateFileNames.map((templateFileName) => {
                 const fileNameToUse = replaceName(templateFileName, templateContext.name);
                 return `${directoryPathForFiles}/${fileNameToUse}`;
             });
 
             let conflictingFilePath: string;
-            for (let filePath of filePaths) {
+            for (const filePath of filePaths) {
                 if (fs.existsSync(filePath)) {
                     conflictingFilePath = filePath;
                     break;
@@ -113,7 +113,7 @@ export class FileCreator {
             mkdirp.sync(directoryPathForFiles);
 
             const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFileNames, filePaths);
-            Object.keys(templateFileNameToFilePathToCreateMapping).forEach(templateFileName => {
+            Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFileName) => {
 
                 const rawTemplateContent = fs.readFileSync(`${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`, "utf8");
                 const template = handlebars.compile(rawTemplateContent);
