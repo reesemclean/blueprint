@@ -8,7 +8,7 @@ import * as mkdirp from "mkdirp";
 import * as constants from "./constants";
 import { getTemplateManifestAtTemplateDirectory } from "./getTemplateManifest";
 
-export interface FileCreatorInputData {
+export interface IFileCreatorInputData {
     templateFolderPath: string;
     pathToCreateAt: string;
     inputName: string;
@@ -20,17 +20,17 @@ interface ITemplateContext {
 }
 
 handlebars.registerHelper({
-    kebabCase: function(string) {
-        return _.kebabCase(string);
+    camelCase: (input) => {
+        return _.camelCase(input);
     },
-    camelCase: function(string) {
-        return _.camelCase(string);
+    kebabCase: (input) => {
+        return _.kebabCase(input);
     },
-    pascalCase: function(string) {
-        return _.chain(string).camelCase().upperFirst().value();
+    pascalCase: (input) => {
+        return _.chain(input).camelCase().upperFirst().value();
     },
-    snakeCase: function(string) {
-        return _.snakeCase(string);
+    snakeCase: (input) => {
+        return _.snakeCase(input);
     },
 });
 
@@ -58,9 +58,9 @@ function getTemplateContext(name: string): ITemplateContext {
 }
 export class FileCreator {
 
-    constructor(private data: FileCreatorInputData) { }
+    constructor(private data: IFileCreatorInputData) { }
 
-    createFiles(): Promise<boolean> {
+    public createFiles(): Promise<boolean> {
 
         return new Promise((resolve, reject) => {
 
@@ -115,7 +115,10 @@ export class FileCreator {
             const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFileNames, filePaths);
             Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFileName) => {
 
-                const rawTemplateContent = fs.readFileSync(`${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`, "utf8");
+                const rawTemplateContent = fs.readFileSync(
+                    `${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`,
+                    "utf8",
+                );
                 const template = handlebars.compile(rawTemplateContent);
                 const content = template(templateContext);
 

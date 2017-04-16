@@ -6,13 +6,13 @@ import * as vscode from "vscode";
 import * as constants from "./constants";
 
 import { CancelError } from "./customErrors";
-import { FileCreatorInputData } from "./fileCreator";
+import { IFileCreatorInputData } from "./fileCreator";
 
 export class InputController {
 
     constructor(private templateFolderPath: string, private directoryPathToCreateAt: string) { }
 
-    public run(): Promise<FileCreatorInputData> {
+    public run(): Promise<IFileCreatorInputData> {
 
         let templateName: string;
         let inputName: string;
@@ -27,7 +27,7 @@ export class InputController {
                 return Promise.resolve();
             })
             .then((value) => {
-                const data: FileCreatorInputData = {
+                const data: IFileCreatorInputData = {
                     inputName,
                     pathToCreateAt: this.directoryPathToCreateAt,
                     templateFolderPath: this.templateFolderPath,
