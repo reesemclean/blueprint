@@ -9,8 +9,8 @@ export interface ITemplateManifest {
 }
 
 const defaultTemplateManifest = {
-    suffixesToIgnoreInInput: [],
     createFilesInFolderWithPattern: null,
+    suffixesToIgnoreInInput: [],
 };
 
 export function getTemplateManifestAtTemplateDirectory(templateFolderPath: string): ITemplateManifest {
