@@ -1,38 +1,38 @@
-'use strict';
+"use strict";
 
-import * as vscode from 'vscode';
-import * as _ from 'lodash';
-import * as fs from 'fs';
-import * as constants from './constants';
+import * as fs from "fs";
+import * as _ from "lodash";
+import * as vscode from "vscode";
+import * as constants from "./constants";
 
-import { FileCreatorInputData } from './fileCreator';
-import { CancelError } from './customErrors';
+import { CancelError } from "./customErrors";
+import { IFileCreatorInputData } from "./fileCreator";
 
 export class InputController {
 
     constructor(private templateFolderPath: string, private directoryPathToCreateAt: string) { }
 
-    public run(): Promise<FileCreatorInputData> {
+    public run(): Promise<IFileCreatorInputData> {
 
         let templateName: string;
         let inputName: string;
 
         return this.showTemplatePickerDialog(this.templateFolderPath)
-            .then(value => {
+            .then((value) => {
                 templateName = value;
                 return this.showNameInputDialog();
             })
-            .then(value => {
+            .then((value) => {
                 inputName = value;
                 return Promise.resolve();
             })
-            .then(value => {
-                const data: FileCreatorInputData = {
-                    templateFolderPath: this.templateFolderPath,
+            .then((value) => {
+                const data: IFileCreatorInputData = {
+                    inputName,
                     pathToCreateAt: this.directoryPathToCreateAt,
-                    inputName: inputName,
-                    templateName: templateName,
-                }
+                    templateFolderPath: this.templateFolderPath,
+                    templateName,
+                };
                 return data;
             });
 
@@ -43,13 +43,15 @@ export class InputController {
 
             let templateNames: string[];
             try {
-                templateNames = this.availableTemplateNames(templateFolderPath)
+                templateNames = this.availableTemplateNames(templateFolderPath);
             } catch (error) {
+                // tslint:disable-next-line:max-line-length
                 reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} Could not find folder: ${templateFolderPath}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
                 return;
             }
 
             if (templateNames.length === 0) {
+                // tslint:disable-next-line:max-line-length
                 reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found in: ${templateFolderPath}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
                 return;
             }
@@ -57,15 +59,15 @@ export class InputController {
             const placeHolder = "Which template would you like to use?";
 
             vscode.window.showQuickPick(templateNames, {
-                placeHolder: placeHolder,
-                ignoreFocusOut: true
+                placeHolder,
+                ignoreFocusOut: true,
             }).then(
                 (value) => {
                     if (value === undefined) {
-                        return Promise.reject(new CancelError('escape was pressed'));
+                        return Promise.reject(new CancelError("escape was pressed"));
                     }
                     if (!value) {
-                        reject(new Error('Unable to create file(s): No Template Selected'));
+                        reject(new Error("Unable to create file(s): No Template Selected"));
                     }
                     resolve(value);
                 },
@@ -79,18 +81,18 @@ export class InputController {
         return new Promise((resolve, reject) => {
 
             vscode.window.showInputBox({
-                placeHolder: 'Name',
-                ignoreFocusOut: true,
-                value: ''
+                                ignoreFocusOut: true,
+                placeHolder: "Name",
+                value: "",
             }).then(
                 (value) => {
                     if (value === undefined) {
-                        return Promise.reject(new CancelError('escape was pressed'));
+                        return Promise.reject(new CancelError("escape was pressed"));
                     }
                     if (!value) {
-                        reject(new Error('Unable to create file(s): No Name Given'));
+                        reject(new Error("Unable to create file(s): No Name Given"));
                     }
-                    const pascalCaseValue = _.chain(value).camelCase().upperFirst().value()
+                    const pascalCaseValue = _.chain(value).camelCase().upperFirst().value();
                     resolve(pascalCaseValue);
                 },
                 (errorReason) => {
@@ -100,7 +102,9 @@ export class InputController {
     }
 
     private availableTemplateNames(templatesFolderPath: string): string[] {
-        const templateDirectories = fs.readdirSync(templatesFolderPath).filter(f => fs.statSync(templatesFolderPath + "/" + f).isDirectory())
+        const templateDirectories = fs
+            .readdirSync(templatesFolderPath)
+            .filter((f) => fs.statSync(templatesFolderPath + "/" + f).isDirectory());
         return templateDirectories;
     }
 
