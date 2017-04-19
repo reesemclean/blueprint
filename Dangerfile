@@ -1,7 +1,7 @@
 # Require Changelog to be modified if more than 20 lines of code have to been changed and #trivial does not appear in pull request title
 declared_trivial = (github.pr_title + github.pr_body).include?("#trivial")
 if !git.modified_files.include?("CHANGELOG.md") && !declared_trivial
-  fail("Please include a CHANGELOG entry. \nYou can find it at #{github.html_link("CHANGELOG.md")}.", sticky: false)
+  fail("Please include an entry in #{github.html_link("CHANGELOG.md")}—if this is a trivial Pull Request that does not require a changelog entry please include #trivial in the title.", sticky: false)
 end
 
 # Make it more obvious that a PR is a work in progress and shouldn't be merged yet
@@ -17,4 +17,4 @@ fail("fit left in tests") if `grep -r fit specs/ `.length > 1
 # Warn if there are changes to the package.json file. 
 warn "#{github.html_link("package.json")} was edited." if git.modified_files.include? "package.json"
 
-message("Thanks! :tada:");
+message(":tada:  Thanks for the Pull Request!");
