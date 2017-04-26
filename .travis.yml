@@ -21,6 +21,6 @@ before_script:
   - yarn run vscode:prepublish
 
 script:
-  - bundle exec danger
+  - yarn danger
   - yarn lint
   - yarn test --silent
