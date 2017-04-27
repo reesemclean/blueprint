@@ -62,11 +62,17 @@
         "lint": "node ./node_modules/tslint/bin/tslint \"src/**/*.ts\"",
         "danger": "danger"
     },
+    "jest": {
+        "transform": {
+            ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        }
+    },
     "devDependencies": {
         "@types/mocha": "^2.2.32",
         "@types/node": "^6.0.40",
         "danger": "^0.18.0",
         "mocha": "^2.3.3",
+        "ts-jest": "^19.0.12",
         "tslint": "^5.1.0",
         "typescript": "^2.2.2",
         "vscode": "^1.0.0"
