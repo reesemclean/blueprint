@@ -34,12 +34,20 @@ handlebars.registerHelper({
     },
 });
 
-function replaceName(stringToReplace: string, name: string) {
-    return stringToReplace
-        .replace("__kebabCase_name__", _.kebabCase(name))
-        .replace("__pascalCase_name__", _.chain(name).camelCase().upperFirst().value())
-        .replace("__snakeCase_name__", _.snakeCase(name))
-        .replace("__camelCase_name__", _.camelCase(name));
+function escapeRegExp(str): string {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace): string {
+  return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
+}
+
+function replaceName(stringToReplace: string, name: string): string {
+    let result = replaceAll(stringToReplace, "__kebabCase_name__", _.kebabCase(name));
+    result = replaceAll(result, "__pascalCase_name__", _.chain(name).camelCase().upperFirst().value());
+    result = replaceAll(result, "__snakeCase_name__", _.snakeCase(name));
+    result = replaceAll(result, "__camelCase_name__", _.camelCase(name));
+    return result;
 }
 
 function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): string[] {
@@ -49,6 +57,29 @@ function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): st
         .filter((f) => f !== constants.MANIFEST_FILE_NAME)
         .filter((f) => !f.startsWith("."));
     return files;
+}
+
+function getFolderNamesAtDirectory(directoryPath: string): string[] {
+    const folderNames = fs
+        .readdirSync(directoryPath)
+        .filter((f) => fs.statSync(directoryPath + "/" + f).isDirectory())
+        .filter((f) => f !== constants.MANIFEST_FILE_NAME)
+        .filter((f) => !f.startsWith("."));
+    return folderNames;
+}
+
+function getFolderPathsRecursively(directoryPath: string, existingPath: string = ""): string[] {
+    const templateFolderNames = getFolderNamesAtDirectory(directoryPath + "/" + existingPath);
+    const folderPathsAtThisLevel = templateFolderNames.map((templateFolderName) => {
+        if (existingPath) {
+            return `${existingPath}/${templateFolderName}`;
+        }
+        return templateFolderName;
+    });
+
+    return folderPathsAtThisLevel.concat(_.flatMap(folderPathsAtThisLevel, (folderPath) => {
+        return getFolderPathsRecursively(directoryPath, folderPath);
+    }));
 }
 
 function getTemplateContext(name: string): ITemplateContext {
@@ -91,14 +122,37 @@ export class FileCreator {
                 }
             }
 
-            const templateFileNames = getTemplateFileNamesAtTemplateDirectory(templateDirectory);
-            const filePaths = templateFileNames.map((templateFileName) => {
-                const fileNameToUse = replaceName(templateFileName, templateContext.name);
-                return `${directoryPathForFiles}/${fileNameToUse}`;
+            const templateFolderPaths = getFolderPathsRecursively(templateDirectory);
+            const folderPathsToCreate = templateFolderPaths.map((templateFolderPath) => {
+                return directoryPathForFiles + "/" + replaceName(templateFolderPath, templateContext.name);
+            });
+
+            let conflictingFolderPath: string;
+            for (const folderPath of folderPathsToCreate) {
+                if (fs.existsSync(directoryPathForFiles + folderPath)) {
+                    conflictingFolderPath = folderPath;
+                    break;
+                }
+            }
+
+            if (conflictingFolderPath) {
+                reject(new Error(`Folder already exists at path: ${conflictingFolderPath}`));
+                return;
+            }
+
+            const templateFilePaths = _.flatMap(templateFolderPaths.concat([""]), (templateFolderPath) => {
+                const fullTemplateFolderPath = templateDirectory + "/" + templateFolderPath;
+                const templateFileNames = getTemplateFileNamesAtTemplateDirectory(fullTemplateFolderPath);
+                return templateFileNames.map((templateFileName) => {
+                    return `${templateFolderPath}/${templateFileName}`;
+                });
+            });
+            const filePathsToCreate = templateFilePaths.map((templateFilePath) => {
+                return directoryPathForFiles + "/" + replaceName(templateFilePath, templateContext.name);
             });
 
             let conflictingFilePath: string;
-            for (const filePath of filePaths) {
+            for (const filePath of filePathsToCreate) {
                 if (fs.existsSync(filePath)) {
                     conflictingFilePath = filePath;
                     break;
@@ -112,17 +166,19 @@ export class FileCreator {
 
             mkdirp.sync(directoryPathForFiles);
 
-            const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFileNames, filePaths);
-            Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFileName) => {
+            folderPathsToCreate.forEach((folderPath) => mkdirp.sync(folderPath));
+
+            const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFilePaths, filePathsToCreate);
+            Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFilePath) => {
 
                 const rawTemplateContent = fs.readFileSync(
-                    `${this.data.templateFolderPath}/${this.data.templateName}/${templateFileName}`,
+                    templateDirectory + "/" + templateFilePath,
                     "utf8",
                 );
                 const template = handlebars.compile(rawTemplateContent);
                 const content = template(templateContext);
 
-                fs.appendFile(templateFileNameToFilePathToCreateMapping[templateFileName], content, (error) => {
+                fs.appendFile(templateFileNameToFilePathToCreateMapping[templateFilePath], content, (error) => {
                     if (error) {
                         reject(error);
                         return;
