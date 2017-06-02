@@ -5,4 +5,4 @@
 * Publish:
     * Log in to vsce command line utility
     * vsce publish X.X.X
-* Tag Commit with pattern: vX.X.X
+* Create Release on Github (Create a tag with pattern vX.X.X)
