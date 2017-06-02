@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [1.2.0] - 2017-06-02
+## [1.3.0] - 2017-06-02
 - Can now have a nested folder structure!
 
 ## [1.1.0] - 2017-04-11

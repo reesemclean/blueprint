@@ -46,7 +46,7 @@ We will continue to add new templates that we think may be helpful to use!
 
 ## Release Notes
 
-### 1.2.0
+### 1.3.0
 
 You can now create folders and nested folder/file structures inside a template folder. Folder names inside a template folder can be templated the same way that file names are.
 
