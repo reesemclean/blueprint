@@ -22,7 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
         const templateFolderRelativePath = vscode.workspace
             .getConfiguration("blueprint")
             .get("templatesPath") as string;
-        const templateFolderPath = `${vscode.workspace.rootPath}/${templateFolderRelativePath}`;
+        const normalizedTemplateRelativePath = path.normalize(templateFolderRelativePath);
+        const templateFolderPath = path.join(vscode.workspace.rootPath, normalizedTemplateRelativePath);
 
         const inputController = new InputController(templateFolderPath, directoryPath);
         inputController.run()

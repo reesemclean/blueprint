@@ -1,6 +1,8 @@
 "use strict";
 
 import * as fs from "fs";
+import * as path from "path";
+
 import * as constants from "./constants";
 
 export interface ITemplateManifest {
@@ -16,7 +18,8 @@ const defaultTemplateManifest = {
 export function getTemplateManifestAtTemplateDirectory(templateFolderPath: string): ITemplateManifest {
 
     try {
-        const rawManifestContent = fs.readFileSync(`${templateFolderPath}/${constants.MANIFEST_FILE_NAME}`, "utf8");
+        const manifestPath = path.join(templateFolderPath, constants.MANIFEST_FILE_NAME);
+        const rawManifestContent = fs.readFileSync(manifestPath, "utf8");
 
         if (!rawManifestContent) { return defaultTemplateManifest; }
 
