@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as handlebars from "handlebars";
 import * as _ from "lodash";
 import * as mkdirp from "mkdirp";
+import * as path from "path";
 
 import * as constants from "./constants";
 import { getTemplateManifestAtTemplateDirectory } from "./getTemplateManifest";
@@ -53,7 +54,10 @@ function replaceName(stringToReplace: string, name: string): string {
 function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): string[] {
     const files = fs
         .readdirSync(templateFolderPath)
-        .filter((f) => !fs.statSync(templateFolderPath + "/" + f).isDirectory())
+        .filter((f) => {
+            const folderPath = path.join(templateFolderPath, f);
+            return !fs.statSync(folderPath).isDirectory();
+        })
         .filter((f) => f !== constants.MANIFEST_FILE_NAME)
         .filter((f) => !f.startsWith("."));
     return files;
@@ -62,17 +66,21 @@ function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): st
 function getFolderNamesAtDirectory(directoryPath: string): string[] {
     const folderNames = fs
         .readdirSync(directoryPath)
-        .filter((f) => fs.statSync(directoryPath + "/" + f).isDirectory())
+        .filter((f) => {
+            const folderPath = path.join(directoryPath, f);
+            return fs.statSync(folderPath).isDirectory();
+        })
         .filter((f) => f !== constants.MANIFEST_FILE_NAME)
         .filter((f) => !f.startsWith("."));
     return folderNames;
 }
 
 function getFolderPathsRecursively(directoryPath: string, existingPath: string = ""): string[] {
-    const templateFolderNames = getFolderNamesAtDirectory(directoryPath + "/" + existingPath);
+    const templatePath = path.join(directoryPath, existingPath);
+    const templateFolderNames = getFolderNamesAtDirectory(templatePath);
     const folderPathsAtThisLevel = templateFolderNames.map((templateFolderName) => {
         if (existingPath) {
-            return `${existingPath}/${templateFolderName}`;
+            return path.join(existingPath, templateFolderName);
         }
         return templateFolderName;
     });
@@ -95,7 +103,7 @@ export class FileCreator {
 
         return new Promise((resolve, reject) => {
 
-            const templateDirectory = `${this.data.templateFolderPath}/${this.data.templateName}`;
+            const templateDirectory = path.join(this.data.templateFolderPath, this.data.templateName);
             const options = getTemplateManifestAtTemplateDirectory(templateDirectory);
 
             let nameToUse = this.data.inputName;
@@ -112,7 +120,7 @@ export class FileCreator {
 
             if (options.createFilesInFolderWithPattern) {
                 const folderName = replaceName(options.createFilesInFolderWithPattern, templateContext.name);
-                directoryPathForFiles = this.data.pathToCreateAt + "/" + folderName;
+                directoryPathForFiles = path.join(this.data.pathToCreateAt, folderName);
 
                 const pathExists = fs.existsSync(directoryPathForFiles);
 
@@ -124,12 +132,12 @@ export class FileCreator {
 
             const templateFolderPaths = getFolderPathsRecursively(templateDirectory);
             const folderPathsToCreate = templateFolderPaths.map((templateFolderPath) => {
-                return directoryPathForFiles + "/" + replaceName(templateFolderPath, templateContext.name);
+                return path.join(directoryPathForFiles, replaceName(templateFolderPath, templateContext.name));
             });
 
             let conflictingFolderPath: string;
             for (const folderPath of folderPathsToCreate) {
-                if (fs.existsSync(directoryPathForFiles + folderPath)) {
+                if (fs.existsSync(path.join(directoryPathForFiles, folderPath))) {
                     conflictingFolderPath = folderPath;
                     break;
                 }
@@ -141,14 +149,14 @@ export class FileCreator {
             }
 
             const templateFilePaths = _.flatMap(templateFolderPaths.concat([""]), (templateFolderPath) => {
-                const fullTemplateFolderPath = templateDirectory + "/" + templateFolderPath;
+                const fullTemplateFolderPath = path.join(templateDirectory, templateFolderPath);
                 const templateFileNames = getTemplateFileNamesAtTemplateDirectory(fullTemplateFolderPath);
                 return templateFileNames.map((templateFileName) => {
-                    return `${templateFolderPath}/${templateFileName}`;
+                    return path.join(templateFolderPath, templateFileName);
                 });
             });
             const filePathsToCreate = templateFilePaths.map((templateFilePath) => {
-                return directoryPathForFiles + "/" + replaceName(templateFilePath, templateContext.name);
+                return path.join(directoryPathForFiles, replaceName(templateFilePath, templateContext.name));
             });
 
             let conflictingFilePath: string;
@@ -172,7 +180,7 @@ export class FileCreator {
             Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFilePath) => {
 
                 const rawTemplateContent = fs.readFileSync(
-                    templateDirectory + "/" + templateFilePath,
+                    path.join(templateDirectory, templateFilePath),
                     "utf8",
                 );
                 const template = handlebars.compile(rawTemplateContent);

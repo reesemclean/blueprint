@@ -2,6 +2,7 @@
 
 import * as fs from "fs";
 import * as _ from "lodash";
+import * as path from "path";
 import * as vscode from "vscode";
 import * as constants from "./constants";
 
@@ -104,7 +105,10 @@ export class InputController {
     private availableTemplateNames(templatesFolderPath: string): string[] {
         const templateDirectories = fs
             .readdirSync(templatesFolderPath)
-            .filter((f) => fs.statSync(templatesFolderPath + "/" + f).isDirectory());
+            .filter((f) => {
+                const templateFolderPath = path.join(templatesFolderPath, f);
+                return fs.statSync(templateFolderPath).isDirectory();
+            });
         return templateDirectories;
     }
 
