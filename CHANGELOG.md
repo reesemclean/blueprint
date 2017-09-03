@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-- Initial Support for non-unix paths
+
+## [1.4.0 - 2017-09-03]
+- Windows support
 
 ## [1.3.0] - 2017-06-02
 - Can now have a nested folder structure!
