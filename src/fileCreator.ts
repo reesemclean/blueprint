@@ -27,14 +27,14 @@ handlebars.registerHelper({
     kebabCase: (input) => {
         return _.kebabCase(input);
     },
+    lowerDotCase: (input) => {
+        return _.snakeCase(input).replace(/_/g, ".");
+    },
     pascalCase: (input) => {
         return _.chain(input).camelCase().upperFirst().value();
     },
     snakeCase: (input) => {
         return _.snakeCase(input);
-    },
-    lowerDotCase: (input) => {
-        return _.snakeCase(input).replace(/_/g, ".");
     },
 });
 
