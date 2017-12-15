@@ -33,6 +33,9 @@ handlebars.registerHelper({
     snakeCase: (input) => {
         return _.snakeCase(input);
     },
+    snakeDotCase: (input) => {
+        return _.snakeCase(input).replace(/_/g, ".");
+    },
 });
 
 function escapeRegExp(str): string {
@@ -47,6 +50,7 @@ function replaceName(stringToReplace: string, name: string): string {
     let result = replaceAll(stringToReplace, "__kebabCase_name__", _.kebabCase(name));
     result = replaceAll(result, "__pascalCase_name__", _.chain(name).camelCase().upperFirst().value());
     result = replaceAll(result, "__snakeCase_name__", _.snakeCase(name));
+    result = replaceAll(result, "__snakeDotCase_name__", _.snakeCase(name).replace(/_/g, "."));
     result = replaceAll(result, "__camelCase_name__", _.camelCase(name));
     return result;
 }
