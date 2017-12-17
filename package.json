@@ -1,77 +1,73 @@
 {
-    "name": "blueprint",
-    "displayName": "Blueprint - New Files and Folders of Files from Templates",
-    "description": "Easily create files and folder of files from templates in Visual Studio Code",
-    "version": "1.4.0",
-    "publisher": "teamchilla",
-    "license": "MIT",
-    "engines": {
-        "vscode": "^1.10.0"
-    },
-    "icon": "icon_128_128.png",
-    "galleryBanner": {
-        "color": "#fafafa",
-        "theme": "light"
-    },
-    "categories": [
-        "Other"
+  "name": "blueprint",
+  "displayName": "Blueprint - New Files and Folders of Files from Templates",
+  "description":
+    "Easily create files and folder of files from templates in Visual Studio Code",
+  "version": "1.5.0",
+  "publisher": "teamchilla",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.10.0"
+  },
+  "icon": "icon_128_128.png",
+  "galleryBanner": {
+    "color": "#fafafa",
+    "theme": "light"
+  },
+  "categories": ["Other"],
+  "repository": "https://github.com/reesemclean/blueprint",
+  "bugs": {
+    "url": "https://github.com/reesemclean/blueprint/issues"
+  },
+  "activationEvents": ["onCommand:extension.blueprint"],
+  "main": "./out/src/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.blueprint",
+        "title": "New File from Template"
+      }
     ],
-    "repository": "https://github.com/reesemclean/blueprint",
-    "bugs": {
-        "url": "https://github.com/reesemclean/blueprint/issues"
-    },
-    "activationEvents": [
-        "onCommand:extension.blueprint"
-    ],
-    "main": "./out/src/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.blueprint",
-                "title": "New File from Template"
-            }
-        ],
-        "menus": {
-            "explorer/context": [
-                {
-                    "command": "extension.blueprint",
-                    "title": "New File from Template",
-                    "group": "navigation"
-                }
-            ]
-        },
-        "configuration": {
-            "type": "object",
-            "title": "Blueprint Configuration",
-            "properties": {
-                "blueprint.templatesPath": {
-                    "type": [
-                        "string"
-                    ],
-                    "default": "blueprint-templates",
-                    "description": "Where your Blueprint templates are stored relative to your workspace root path. Defaults to a folder named 'blueprint-templates' in the root of your project."
-                }
-            }
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "extension.blueprint",
+          "title": "New File from Template",
+          "group": "navigation"
         }
+      ]
     },
-    "scripts": {
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test",
-        "lint": "node ./node_modules/tslint/bin/tslint \"src/**/*.ts\""
-    },
-    "devDependencies": {
-        "@types/mocha": "^2.2.32",
-        "@types/node": "^6.0.40",
-        "mocha": "^2.3.3",
-        "tslint": "^5.1.0",
-        "typescript": "^2.2.2",
-        "vscode": "^1.0.0"
-    },
-    "dependencies": {
-        "handlebars": "^4.0.6",
-        "lodash": "^4.17.4",
-        "mkdirp": "^0.5.1"
+    "configuration": {
+      "type": "object",
+      "title": "Blueprint Configuration",
+      "properties": {
+        "blueprint.templatesPath": {
+          "type": ["string"],
+          "default": "blueprint-templates",
+          "description":
+            "Where your Blueprint templates are stored relative to your workspace root path. Defaults to a folder named 'blueprint-templates' in the root of your project."
+        }
+      }
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test",
+    "lint": "node ./node_modules/tslint/bin/tslint \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.40",
+    "mocha": "^2.3.3",
+    "tslint": "^5.1.0",
+    "typescript": "^2.2.2",
+    "vscode": "^1.0.0"
+  },
+  "dependencies": {
+    "handlebars": "^4.0.6",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1"
+  }
 }

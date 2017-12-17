@@ -1,20 +1,28 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
+project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-- Added lowerDotCase as a new replacement option.
+
+## [1.5.0 - 2017-12-17]
+
+* Added lowerDotCase as a new replacement option.
 
 ## [1.4.0 - 2017-09-03]
-- Windows support
+
+* Windows support
 
 ## [1.3.0] - 2017-06-02
-- Can now have a nested folder structure!
+
+* Can now have a nested folder structure!
 
 ## [1.1.0] - 2017-04-11
-- Fix mixing dependency in release
+
+* Fix mixing dependency in release
 
 ## [1.0.0] - 2017-04-11
-- Initial release
+
+* Initial release
