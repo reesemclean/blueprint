@@ -47,6 +47,16 @@ Example:
 "blueprint.templatesPath":"blueprint-templates",: ;
 ```
 
+## Available Transforms
+
+| Helper Name  | Example Use In Templates | Example Use in File/Folder Names | Sample Result          |
+|--------------|--------------------------|----------------------------------|------------------------|
+| camelCase    | {{camelCase name}}       | \_\_camelCase_name\_\_               | thisIsCamelCase        |
+| pascalCase   | {{pascalCase name}}      | \_\_pascalCase_name\_\_              | ThisIsPascalCase       |
+| snakeCase    | {{snakeCase name}}       | \_\_snakeCase_name\_\_               | this_is_snake_case     |
+| kebabCase    | {{kebabCase name}}       | \_\_kebabCase_name\_\_               | this-is-kebab-case     |
+| lowerDotCase | {{lowerDotCase name}}    | \_\_lowerDotCase_name\_\_            | this.is.lower.dot.case |
+
 ## Examples
 
 Example templates can be found here:
