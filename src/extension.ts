@@ -24,11 +24,11 @@ export function activate(context: vscode.ExtensionContext) {
             .get("templatesPath") as string[];
 
         const templateFolderPath: string[] = [];
-        for(let templatePath of templateFolderRelativePath){
+        for (const templatePath of templateFolderRelativePath){
             let normalizedPath = path.normalize(templatePath);
 
-            if(normalizedPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY){
-                let subPath = normalizedPath.substring(constants.WORKSPACE_KEY.length, normalizedPath.length);
+            if (normalizedPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY){
+                const subPath = normalizedPath.substring(constants.WORKSPACE_KEY.length, normalizedPath.length);
                 normalizedPath = path.join(vscode.workspace.rootPath, subPath);
             }
 

@@ -28,12 +28,6 @@ export class InputController {
                 return Promise.resolve();
             })
             .then((value) => {
-                console.log({
-                    inputName,
-                    pathToCreateAt: this.directoryPathToCreateAt,
-                    templateFolderPath: templateDirectory
-                });
-
                 const data: IFileCreatorInputData = {
                     inputName,
                     pathToCreateAt: this.directoryPathToCreateAt,
@@ -53,11 +47,10 @@ export class InputController {
                 try {
                     templateNames = this.availableTemplateNames(templatePath);
 
-                    const templateObject: string[] = templateNames.map((str) => templatePath + '\\' + str);
+                    const templateObject: string[] = templateNames.map((str) => templatePath + "\\" + str);
                     
                     templates = templates.concat(templateObject);
                 } catch (error) {
-                    // reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} Could not find folder: ${templateFolderPath[i]}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
                     // return;
                     // tslint:disable-next-line:max-line-length
                     // return;
