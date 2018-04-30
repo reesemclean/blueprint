@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
         for(var i = 0; i < templateFolderRelativePath.length; i++){
             let normalizedPath = path.normalize(templateFolderRelativePath[i]);
 
-            if(normalizedPath.substring(0, 11) === '%WORKSPACE%'){
+            if(normalizedPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY){
                 normalizedPath = path.join(vscode.workspace.rootPath, normalizedPath.substring(11, normalizedPath.length));
             }
 
