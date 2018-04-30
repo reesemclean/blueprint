@@ -11,16 +11,16 @@ import { IFileCreatorInputData } from "./fileCreator";
 
 export class InputController {
 
-    constructor(private templateFolderPath: string, private directoryPathToCreateAt: string) { }
+    constructor(private templateFolderPath: string[], private directoryPathToCreateAt: string) { }
 
     public run(): Promise<IFileCreatorInputData> {
 
-        let templateName: string;
+        let templateDirectory: string;
         let inputName: string;
 
         return this.showTemplatePickerDialog(this.templateFolderPath)
             .then((value) => {
-                templateName = value;
+                templateDirectory = value;
                 return this.showNameInputDialog();
             })
             .then((value) => {
@@ -28,38 +28,51 @@ export class InputController {
                 return Promise.resolve();
             })
             .then((value) => {
+                console.log({
+                    inputName,
+                    pathToCreateAt: this.directoryPathToCreateAt,
+                    templateFolderPath: templateDirectory
+                });
+
                 const data: IFileCreatorInputData = {
                     inputName,
                     pathToCreateAt: this.directoryPathToCreateAt,
-                    templateFolderPath: this.templateFolderPath,
-                    templateName,
+                    templateFolderPath: templateDirectory
                 };
                 return data;
             });
 
     }
 
-    private showTemplatePickerDialog(templateFolderPath: string): Promise<string> {
+    private showTemplatePickerDialog(templateFolderPath: string[]): Promise<string> {
         return new Promise((resolve, reject) => {
+            let templates: string[] = [];
 
-            let templateNames: string[];
-            try {
-                templateNames = this.availableTemplateNames(templateFolderPath);
-            } catch (error) {
-                // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} Could not find folder: ${templateFolderPath}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
-                return;
+            for(var i = 0; i < templateFolderPath.length; i++){
+                let templateNames: string[];
+                try {
+                    templateNames = this.availableTemplateNames(templateFolderPath[i]);
+
+                    const templateObject: string[] = templateNames.map((str) => templateFolderPath[i] + '\\' + str);
+                    
+                    templates = templates.concat(templateObject);
+                } catch (error) {
+                    // reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} Could not find folder: ${templateFolderPath[i]}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                    // return;
+                    // tslint:disable-next-line:max-line-length
+                    // return;
+                }
             }
 
-            if (templateNames.length === 0) {
+            if (templates.length === 0) {
                 // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found in: ${templateFolderPath}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
-                return;
+                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found in: ${templateFolderPath[i]}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                /// return;
             }
 
             const placeHolder = "Which template would you like to use?";
 
-            vscode.window.showQuickPick(templateNames, {
+            vscode.window.showQuickPick(templates, {
                 placeHolder,
                 ignoreFocusOut: true,
             }).then(
@@ -70,6 +83,7 @@ export class InputController {
                     if (!value) {
                         reject(new Error("Unable to create file(s): No Template Selected"));
                     }
+
                     resolve(value);
                 },
                 (errorReason) => {

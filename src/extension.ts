@@ -21,11 +21,21 @@ export function activate(context: vscode.ExtensionContext) {
 
         const templateFolderRelativePath = vscode.workspace
             .getConfiguration("blueprint")
-            .get("templatesPath") as string;
-        const normalizedTemplateRelativePath = path.normalize(templateFolderRelativePath);
-        const templateFolderPath = path.join(vscode.workspace.rootPath, normalizedTemplateRelativePath);
+            .get("templatesPath") as string[];
+            
+        const templateFolderPath: string[] = [];
+        for(var i = 0; i < templateFolderRelativePath.length; i++){
+            let normalizedPath = path.normalize(templateFolderRelativePath[i]);
 
+            if(normalizedPath.substring(0, 11) === '%WORKSPACE%'){
+                normalizedPath = path.join(vscode.workspace.rootPath, normalizedPath.substring(11, normalizedPath.length));
+            }
+
+            templateFolderPath.push(normalizedPath);
+        }
+        
         const inputController = new InputController(templateFolderPath, directoryPath);
+
         inputController.run()
             .then((data) => {
                 const fileCreator = new FileCreator(data);
@@ -40,7 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
                 const errorMessage = error.message ? error.message : "There was a problem creating your file(s).";
                 vscode.window.showErrorMessage(errorMessage, { modal: isModal });
             });
-
     });
 
     context.subscriptions.push(disposable);

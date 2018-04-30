@@ -13,7 +13,6 @@ export interface IFileCreatorInputData {
     templateFolderPath: string;
     pathToCreateAt: string;
     inputName: string;
-    templateName: string;
 }
 
 interface ITemplateContext {
@@ -107,7 +106,7 @@ export class FileCreator {
 
         return new Promise((resolve, reject) => {
 
-            const templateDirectory = path.join(this.data.templateFolderPath, this.data.templateName);
+            const templateDirectory = path.join(this.data.templateFolderPath);
             const options = getTemplateManifestAtTemplateDirectory(templateDirectory);
 
             let nameToUse = this.data.inputName;
