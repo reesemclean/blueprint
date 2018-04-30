@@ -22,18 +22,19 @@ export function activate(context: vscode.ExtensionContext) {
         const templateFolderRelativePath = vscode.workspace
             .getConfiguration("blueprint")
             .get("templatesPath") as string[];
-            
+
         const templateFolderPath: string[] = [];
-        for(var i = 0; i < templateFolderRelativePath.length; i++){
-            let normalizedPath = path.normalize(templateFolderRelativePath[i]);
+        for(let templatePath of templateFolderRelativePath){
+            let normalizedPath = path.normalize(templatePath);
 
             if(normalizedPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY){
-                normalizedPath = path.join(vscode.workspace.rootPath, normalizedPath.substring(11, normalizedPath.length));
+                let subPath = normalizedPath.substring(constants.WORKSPACE_KEY.length, normalizedPath.length);
+                normalizedPath = path.join(vscode.workspace.rootPath, subPath);
             }
 
             templateFolderPath.push(normalizedPath);
         }
-        
+
         const inputController = new InputController(templateFolderPath, directoryPath);
 
         inputController.run()

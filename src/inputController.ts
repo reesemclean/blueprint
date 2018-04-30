@@ -48,12 +48,12 @@ export class InputController {
         return new Promise((resolve, reject) => {
             let templates: string[] = [];
 
-            for(var i = 0; i < templateFolderPath.length; i++){
+            for(const templatePath of templateFolderPath){
                 let templateNames: string[];
                 try {
-                    templateNames = this.availableTemplateNames(templateFolderPath[i]);
+                    templateNames = this.availableTemplateNames(templatePath);
 
-                    const templateObject: string[] = templateNames.map((str) => templateFolderPath[i] + '\\' + str);
+                    const templateObject: string[] = templateNames.map((str) => templatePath + '\\' + str);
                     
                     templates = templates.concat(templateObject);
                 } catch (error) {
@@ -66,7 +66,7 @@ export class InputController {
 
             if (templates.length === 0) {
                 // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found in: ${templateFolderPath[i]}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
                 /// return;
             }
 
