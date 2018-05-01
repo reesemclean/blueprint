@@ -42,12 +42,15 @@ export class InputController {
         return new Promise((resolve, reject) => {
             let templates: string[] = [];
 
-            for (const templatePath of templateFolderPath){
+            for (const templatePath of templateFolderPath) {
                 let templateNames: string[];
                 try {
                     templateNames = this.availableTemplateNames(templatePath);
 
-                    const templateObject: string[] = templateNames.map((str) => templatePath + "\\" + str);
+                    const templateObject: string[] = templateNames.map(name =>
+                        path.join(templatePath, name)
+                    );
+
                     templates = templates.concat(templateObject);
                 } catch (error) {
                     // return;
@@ -88,7 +91,7 @@ export class InputController {
         return new Promise((resolve, reject) => {
 
             vscode.window.showInputBox({
-                                ignoreFocusOut: true,
+                ignoreFocusOut: true,
                 placeHolder: "Name",
                 value: "",
             }).then(
