@@ -47,9 +47,9 @@ export class InputController {
                 try {
                     templateNames = this.availableTemplateNames(templatePath);
 
-                    const templateObject: string[] = templateNames.map(name =>
-                        path.join(templatePath, name)
-                    );
+                    const templateObject: string[] = templateNames.map((name) => {
+                        return path.join(templatePath, name);
+                    });
 
                     templates = templates.concat(templateObject);
                 } catch (error) {

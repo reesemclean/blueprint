@@ -1,8 +1,8 @@
 "use strict";
 
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
-import * as os from 'os';
 import * as vscode from "vscode";
 
 import * as constants from "./constants";
@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
       .getConfiguration("blueprint")
       .get("templatesPath") as string[];
 
-    const templateFolderPaths = templateFolderRelativePaths.map(templatePath => {
+    const templateFolderPaths = templateFolderRelativePaths.map((templatePath) => {
 
       const normalizedPath = path.normalize(templatePath);
       let result = templatePath;
