@@ -96,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
                         path: normalized.path
                     }
                 });
-            } else {
+            } else if(config instanceof Object) {
                 for(const k in config){
                     data.push({
                         alias: k,

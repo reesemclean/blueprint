@@ -53,7 +53,7 @@ export class InputController {
                 try {
                     templateNames = this.availableTemplateNames(folder.path);
 
-                    const templateObject: string[] = templateNames.map((str) => folder.alias + "\\" + str);
+                    const templateObject: string[] = templateNames.map((str) => folder.alias + " : " + str);
                     templates = templates.concat(templateObject);
                 } catch (error) {
                     //TODO: Add logging
