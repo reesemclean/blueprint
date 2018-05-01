@@ -49,7 +49,7 @@
             "array"
           ],
           "default": [
-            "%WORKSPACE%/blueprint-templates"
+            "./blueprint-templates"
           ],
           "description": "Where your Blueprint templates are stored relative to your workspace root path. Defaults to a folder named 'blueprint-templates' in the root of your project."
         }

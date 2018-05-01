@@ -29,10 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
       const normalizedPath = path.normalize(templatePath);
       let result = templatePath;
 
-      if (normalizedPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY) {
-        const subPath = normalizedPath.substring(constants.WORKSPACE_KEY.length, normalizedPath.length);
-        result = path.join(vscode.workspace.rootPath, subPath);
-      } else if (normalizedPath.substring(0, 1) === "~") {
+      if (normalizedPath.substring(0, 1) === "~") {
         const home = os.homedir();
         const subPath = normalizedPath.substring(1, normalizedPath.length);
         result = path.join(home, subPath);
