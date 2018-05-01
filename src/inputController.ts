@@ -11,10 +11,11 @@ import { IFileCreatorInputData } from "./fileCreator";
 
 export class InputController {
 
-    constructor(private templateFolders: {
+    constructor(private templateFolders: Array<{
         alias: string,
-        path: string
-    }[], private directoryPathToCreateAt: string) { }
+        path: string,
+    }>,
+        private directoryPathToCreateAt: string) { }
 
     public run(): Promise<IFileCreatorInputData> {
 
@@ -41,14 +42,14 @@ export class InputController {
 
     }
 
-    private showTemplatePickerDialog(templateFolders: {
+    private showTemplatePickerDialog(templateFolders: Array<{
         alias: string,
-        path: string
-    }[]): Promise<string> {
+        path: string,
+    }>): Promise<string> {
         return new Promise((resolve, reject) => {
             let templates: string[] = [];
 
-            for (const folder of templateFolders){
+            for (const folder of templateFolders) {
                 let templateNames: string[];
                 try {
                     templateNames = this.availableTemplateNames(folder.path);
@@ -56,7 +57,7 @@ export class InputController {
                     const templateObject: string[] = templateNames.map((str) => folder.alias + " : " + str);
                     templates = templates.concat(templateObject);
                 } catch (error) {
-                    //TODO: Add logging
+                    // TODO: Add logging
                 }
             }
 
@@ -64,7 +65,8 @@ export class InputController {
                 // tslint:disable-next-line:max-line-length
                 const directories = templateFolders.map((obj) => obj.path);
 
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found at the below directories: \n\n ${directories.join('\n')} \n\n Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found at the below directories: \n\n ${directories.join("\n")} \n\n Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                
                 return;
             }
 
@@ -94,7 +96,7 @@ export class InputController {
         return new Promise((resolve, reject) => {
 
             vscode.window.showInputBox({
-                                ignoreFocusOut: true,
+                ignoreFocusOut: true,
                 placeHolder: "Name",
                 value: "",
             }).then(

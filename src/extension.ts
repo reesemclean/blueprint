@@ -24,10 +24,10 @@ export function activate(context: vscode.ExtensionContext) {
             .getConfiguration("blueprint")
             .get("templatesPath") as object | string | string[];
 
-        const templateFolders: {
+        const templateFolders: Array<{
             alias: string,
-            path: string
-        }[] = readConfig(config);
+            path: string,
+        }> = readConfig(config);
 
         const inputController = new InputController(templateFolders, directoryPath);
 
@@ -49,10 +49,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     /**
      * Normalizes the path by removing reserved keys and appending the necessary directory
-     * 
+     *
      * @param configPath The configuration path
      */
-    function normalizePath (configPath: string) {
+    function normalizePath(configPath: string) {
         let global = true;
 
         // Validate whether the path has the root key
@@ -65,41 +65,41 @@ export function activate(context: vscode.ExtensionContext) {
         let normalizedPath = path.normalize(configPath);
 
         return {
+            global,
             path: normalizedPath,
-            global: global
         };
     }
 
     /**
      * Loads the configuration data based on type and creates an array of {alias, path} for the paths
-     * 
+     *
      * @param config Config data loaded from VSCode settings
      */
-    function readConfig (config: string[] | string | object) {
-        let data : {
+    function readConfig(config: string[] | string | object) {
+        let data: Array<{
             alias: string,
-            path: string
-        }[] = [];
+            path: string,
+        }> = [];
 
-        if(typeof config === 'string'){
+        if (typeof config === "string") {
             const normalized = normalizePath(config);
             data.push({
-                alias: normalized.global ? 'Global' : 'Local',
-                path: normalized.path
+                alias: normalized.global ? "Global" : "Local",
+                path: normalized.path,
             });
-        } else if(config instanceof Array){
+        } else if (config instanceof Array) {
             data = config.map((path) => {
                 const normalized = normalizePath(path);
                 return {
-                    alias: normalized.global ? 'Global' : 'Local',
-                    path: normalized.path
-                }
+                    alias: normalized.global ? "Global" : "Local",
+                    path: normalized.path,
+                };
             });
-        } else if(config instanceof Object) {
-            for(const k in config){
+        } else if (config instanceof Object) {
+            for (const k of Object.keys(config)) {
                 data.push({
                     alias: k,
-                    path: normalizePath(config[k]).path
+                    path: normalizePath(config[k]).path,
                 });
             }
         }
