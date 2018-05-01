@@ -53,6 +53,7 @@ export class InputController {
 
                     templates = templates.concat(templateObject);
                 } catch (error) {
+                    // tslint:disable-next-line
                     console.log(`Error loading template path: ${templatePath}, error:  ${error}`);
                 }
             }
