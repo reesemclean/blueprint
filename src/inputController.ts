@@ -11,16 +11,20 @@ import { IFileCreatorInputData } from "./fileCreator";
 
 export class InputController {
 
-    constructor(private templateFolderPath: string, private directoryPathToCreateAt: string) { }
+    constructor(private templateFolders: Array<{
+        alias: string,
+        path: string,
+    }>,
+        private directoryPathToCreateAt: string) { }
 
     public run(): Promise<IFileCreatorInputData> {
 
-        let templateName: string;
+        let templateDirectory: string;
         let inputName: string;
 
-        return this.showTemplatePickerDialog(this.templateFolderPath)
+        return this.showTemplatePickerDialog(this.templateFolders)
             .then((value) => {
-                templateName = value;
+                templateDirectory = value;
                 return this.showNameInputDialog();
             })
             .then((value) => {
@@ -31,35 +35,44 @@ export class InputController {
                 const data: IFileCreatorInputData = {
                     inputName,
                     pathToCreateAt: this.directoryPathToCreateAt,
-                    templateFolderPath: this.templateFolderPath,
-                    templateName,
+                    templateFolderPath: templateDirectory,
                 };
                 return data;
             });
 
     }
 
-    private showTemplatePickerDialog(templateFolderPath: string): Promise<string> {
+    private showTemplatePickerDialog(templateFolders: Array<{
+        alias: string,
+        path: string,
+    }>): Promise<string> {
         return new Promise((resolve, reject) => {
+            let templates: string[] = [];
 
-            let templateNames: string[];
-            try {
-                templateNames = this.availableTemplateNames(templateFolderPath);
-            } catch (error) {
-                // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} Could not find folder: ${templateFolderPath}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
-                return;
+            for (const folder of templateFolders) {
+                let templateNames: string[];
+                try {
+                    templateNames = this.availableTemplateNames(folder.path);
+
+                    const templateObject: string[] = templateNames.map((str) => folder.alias + " : " + str);
+                    templates = templates.concat(templateObject);
+                } catch (error) {
+                    // TODO: Add logging
+                }
             }
 
-            if (templateNames.length === 0) {
+            if (templates.length === 0) {
                 // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found in: ${templateFolderPath}. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                const directories = templateFolders.map((obj) => obj.path);
+
+                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found at the below directories: \n\n ${directories.join("\n")} \n\n Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                
                 return;
             }
 
             const placeHolder = "Which template would you like to use?";
 
-            vscode.window.showQuickPick(templateNames, {
+            vscode.window.showQuickPick(templates, {
                 placeHolder,
                 ignoreFocusOut: true,
             }).then(
@@ -70,6 +83,7 @@ export class InputController {
                     if (!value) {
                         reject(new Error("Unable to create file(s): No Template Selected"));
                     }
+
                     resolve(value);
                 },
                 (errorReason) => {
@@ -82,7 +96,7 @@ export class InputController {
         return new Promise((resolve, reject) => {
 
             vscode.window.showInputBox({
-                                ignoreFocusOut: true,
+                ignoreFocusOut: true,
                 placeHolder: "Name",
                 value: "",
             }).then(
@@ -102,12 +116,12 @@ export class InputController {
         });
     }
 
-    private availableTemplateNames(templatesFolderPath: string): string[] {
+    private availableTemplateNames(templatespath: string): string[] {
         const templateDirectories = fs
-            .readdirSync(templatesFolderPath)
+            .readdirSync(templatespath)
             .filter((f) => {
-                const templateFolderPath = path.join(templatesFolderPath, f);
-                return fs.statSync(templateFolderPath).isDirectory();
+                const templatepath = path.join(templatespath, f);
+                return fs.statSync(templatepath).isDirectory();
             });
         return templateDirectories;
     }

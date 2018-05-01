@@ -43,8 +43,17 @@ change the `blueprint.templatesPath` setting
 Example:
 
 ```less
-// Where your Blueprint templates are stored relative to your workspace root path. Defaults to ./blueprint-templates
-"blueprint.templatesPath":"blueprint-templates",: ;
+// Where your Blueprint templates are stored. Templates are loaded relative to your VSCode program files, unless proceeded by './'. 
+
+"blueprint.templatesPath": [
+  "blueprint-templates", // Loaded from VSCode Program Files
+  "./blueprint-templates"
+]
+
+// Folders can also be aliased 
+"blueprint.templatesPath": {
+  "Modules": "blueprint-templates/modules"
+}
 ```
 
 ## Available Transforms

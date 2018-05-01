@@ -7,6 +7,10 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.6.0 - 2018-4-18]
+
+* Added multi-folder support and global folder support for templates.
+
 ## [1.5.0 - 2017-12-17]
 
 * Added lowerDotCase as a new replacement option.
