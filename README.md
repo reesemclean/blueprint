@@ -43,8 +43,15 @@ change the `blueprint.templatesPath` setting
 Example:
 
 ```less
-// Where your Blueprint templates are stored relative to your workspace root path. Defaults to ./blueprint-templates
-"blueprint.templatesPath":"blueprint-templates",: ;
+// Where your Blueprint templates are stored. Templates are loaded relative to your workspace root path. Defaults to ./blueprint-templates
+
+Examples:
+"blueprint.templatesPath": [
+  "./blueprint-templates",
+  "../path-one-level-up-from-workspace",
+  "~/path-from-home-folder",
+  "/path-from-root
+]
 ```
 
 ## Available Transforms
