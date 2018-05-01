@@ -8,6 +8,7 @@ import * as constants from "./constants";
 import { CancelError } from "./customErrors";
 import { FileCreator } from "./fileCreator";
 import { InputController } from "./inputController";
+import { isArray } from "util";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -19,23 +20,16 @@ export function activate(context: vscode.ExtensionContext) {
             directoryPath = path.dirname(directoryPath);
         }
 
-        const templateFolderRelativePath = vscode.workspace
+        const config = vscode.workspace
             .getConfiguration("blueprint")
-            .get("templatesPath") as string[];
+            .get("templatesPath") as object | string | string[];
 
-        const templateFolderPath: string[] = [];
-        for (const templatePath of templateFolderRelativePath){
-            let normalizedPath = path.normalize(templatePath);
+        const templateFolders: {
+            alias: string,
+            path: string
+        }[] = readConfig(config);
 
-            if (normalizedPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY) {
-                const subPath = normalizedPath.substring(constants.WORKSPACE_KEY.length, normalizedPath.length);
-                normalizedPath = path.join(vscode.workspace.rootPath, subPath);
-            }
-
-            templateFolderPath.push(normalizedPath);
-        }
-
-        const inputController = new InputController(templateFolderPath, directoryPath);
+        const inputController = new InputController(templateFolders, directoryPath);
 
         inputController.run()
             .then((data) => {
@@ -52,6 +46,68 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window.showErrorMessage(errorMessage, { modal: isModal });
             });
     });
+
+    /**
+     * Normalizes the path by removing reserved keys and appending the necessary directory
+     * 
+     * @param configPath The configuration path
+     */
+    function normalizePath (configPath: string) {
+        let global = true;
+
+        // Validate whether the path has the root key
+        if (configPath.substring(0, constants.WORKSPACE_KEY.length) === constants.WORKSPACE_KEY) {
+            const localPath = configPath.substring(constants.WORKSPACE_KEY.length, configPath.length);
+            configPath = path.join(vscode.workspace.rootPath, localPath);
+            global = false;
+        }
+
+        let normalizedPath = path.normalize(configPath);
+
+        return {
+            path: normalizedPath,
+            global: global
+        };
+    }
+
+    /**
+     * Loads the configuration data based on type and creates an array of {alias, path} for the paths
+     * 
+     * @param config Config data loaded from VSCode settings
+     */
+    function readConfig (config: string[] | string | object) {
+        let data : {
+            alias: string,
+            path: string
+        }[] = [];
+
+        if(typeof config === 'string'){
+            const normalized = normalizePath(config);
+            data.push({
+                alias: normalized.global ? 'Global' : 'Local',
+                path: normalized.path
+            });
+        } else if(typeof config === 'object'){
+            if(config instanceof Array){
+                data = config.map((path) => {
+                    const normalized = normalizePath(path);
+                    return {
+                        alias: normalized.global ? 'Global' : 'Local',
+                        path: normalized.path
+                    }
+                });
+            } else {
+                for(const k in config){
+                    data.push({
+                        alias: k,
+                        path: normalizePath(config[k]).path
+                    });
+                }
+            }
+        }
+
+        return data;
+    }
 
     context.subscriptions.push(disposable);
 }

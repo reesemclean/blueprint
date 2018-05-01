@@ -2,7 +2,7 @@
   "name": "blueprint",
   "displayName": "Blueprint - New Files and Folders of Files from Templates",
   "description": "Easily create files and folder of files from templates in Visual Studio Code",
-  "version": "1.6.0",
+  "version": "2.0.0",
   "publisher": "teamchilla",
   "license": "MIT",
   "engines": {
@@ -46,12 +46,14 @@
       "properties": {
         "blueprint.templatesPath": {
           "type": [
-            "array"
+            "array",
+            "string",
+            "object"
           ],
           "default": [
-            "%WORKSPACE%/blueprint-templates"
+            "./blueprint-templates"
           ],
-          "description": "Where your Blueprint templates are stored relative to your workspace root path. Defaults to a folder named 'blueprint-templates' in the root of your project."
+          "description": "Where your Blueprint templates are stored relative to your workspace root path. Defaults to a folder named './blueprint-templates' in the root of your project."
         }
       }
     }

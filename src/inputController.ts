@@ -11,14 +11,17 @@ import { IFileCreatorInputData } from "./fileCreator";
 
 export class InputController {
 
-    constructor(private templateFolderPath: string[], private directoryPathToCreateAt: string) { }
+    constructor(private templateFolders: {
+        alias: string,
+        path: string
+    }[], private directoryPathToCreateAt: string) { }
 
     public run(): Promise<IFileCreatorInputData> {
 
         let templateDirectory: string;
         let inputName: string;
 
-        return this.showTemplatePickerDialog(this.templateFolderPath)
+        return this.showTemplatePickerDialog(this.templateFolders)
             .then((value) => {
                 templateDirectory = value;
                 return this.showNameInputDialog();
@@ -38,28 +41,31 @@ export class InputController {
 
     }
 
-    private showTemplatePickerDialog(templateFolderPath: string[]): Promise<string> {
+    private showTemplatePickerDialog(templateFolders: {
+        alias: string,
+        path: string
+    }[]): Promise<string> {
         return new Promise((resolve, reject) => {
             let templates: string[] = [];
 
-            for (const templatePath of templateFolderPath){
+            for (const folder of templateFolders){
                 let templateNames: string[];
                 try {
-                    templateNames = this.availableTemplateNames(templatePath);
+                    templateNames = this.availableTemplateNames(folder.path);
 
-                    const templateObject: string[] = templateNames.map((str) => templatePath + "\\" + str);
+                    const templateObject: string[] = templateNames.map((str) => folder.alias + "\\" + str);
                     templates = templates.concat(templateObject);
                 } catch (error) {
-                    // return;
-                    // tslint:disable-next-line:max-line-length
-                    // return;
+                    //TODO: Add logging
                 }
             }
 
             if (templates.length === 0) {
                 // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
-                /// return;
+                const directories = templateFolders.map((obj) => obj.path);
+
+                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found at the below directories: \n\n ${directories.join('\n')} \n\n Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
+                return;
             }
 
             const placeHolder = "Which template would you like to use?";
@@ -108,12 +114,12 @@ export class InputController {
         });
     }
 
-    private availableTemplateNames(templatesFolderPath: string): string[] {
+    private availableTemplateNames(templatespath: string): string[] {
         const templateDirectories = fs
-            .readdirSync(templatesFolderPath)
+            .readdirSync(templatespath)
             .filter((f) => {
-                const templateFolderPath = path.join(templatesFolderPath, f);
-                return fs.statSync(templateFolderPath).isDirectory();
+                const templatepath = path.join(templatespath, f);
+                return fs.statSync(templatepath).isDirectory();
             });
         return templateDirectories;
     }
