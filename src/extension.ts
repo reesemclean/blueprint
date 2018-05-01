@@ -87,22 +87,20 @@ export function activate(context: vscode.ExtensionContext) {
                 alias: normalized.global ? 'Global' : 'Local',
                 path: normalized.path
             });
-        } else if(typeof config === 'object'){
-            if(config instanceof Array){
-                data = config.map((path) => {
-                    const normalized = normalizePath(path);
-                    return {
-                        alias: normalized.global ? 'Global' : 'Local',
-                        path: normalized.path
-                    }
-                });
-            } else if(config instanceof Object) {
-                for(const k in config){
-                    data.push({
-                        alias: k,
-                        path: normalizePath(config[k]).path
-                    });
+        } else if(config instanceof Array){
+            data = config.map((path) => {
+                const normalized = normalizePath(path);
+                return {
+                    alias: normalized.global ? 'Global' : 'Local',
+                    path: normalized.path
                 }
+            });
+        } else if(config instanceof Object) {
+            for(const k in config){
+                data.push({
+                    alias: k,
+                    path: normalizePath(config[k]).path
+                });
             }
         }
 
