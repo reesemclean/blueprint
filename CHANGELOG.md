@@ -7,9 +7,9 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [1.6.0 - 2018-4-18]
+## [2.0.0 - 2018-4-30]
 
-* Added multi-folder support and global folder support for templates.
+* Added multi-folder support and support for expanding ~ (home) directory paths.
 
 ## [1.5.0 - 2017-12-17]
 
