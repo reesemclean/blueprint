@@ -53,16 +53,14 @@ export class InputController {
 
                     templates = templates.concat(templateObject);
                 } catch (error) {
-                    // return;
-                    // tslint:disable-next-line:max-line-length
-                    // return;
+                    console.log(`Error loading template path: ${templatePath}, error:  ${error}`);
                 }
             }
 
             if (templates.length === 0) {
                 // tslint:disable-next-line:max-line-length
                 reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
-                /// return;
+                return;
             }
 
             const placeHolder = "Which template would you like to use?";
