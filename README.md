@@ -77,6 +77,10 @@ We will continue to add new templates that we think may be helpful to use!
 
 ## Release Notes
 
+### 2.1.0
+
+Added two new transform helper: lowerCase and upperCase.
+
 ### 2.0.0
 
 Adds ability to provide multiple folders of templates. Useful for using both a project local and a shared (global) templates.
