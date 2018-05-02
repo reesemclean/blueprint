@@ -37,6 +37,9 @@ handlebars.registerHelper({
     },
     upperCase: (input) => {
         return _.upperCase(input);
+    },
+    lowerCase: (input) => {
+        return _.lowerCase(input);
     }
 });
 
@@ -55,6 +58,7 @@ function replaceName(stringToReplace: string, name: string): string {
     result = replaceAll(result, "__lowerDotCase_name__", _.snakeCase(name).replace(/_/g, "."));
     result = replaceAll(result, "__camelCase_name__", _.camelCase(name));
     result = replaceAll(result, "__upperCase_name__", _.upperCase(name));
+    result = replaceAll(result, "__lowerCase_name__", _.lowerCase(name));
     return result;
 }
 
