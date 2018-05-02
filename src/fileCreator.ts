@@ -35,6 +35,9 @@ handlebars.registerHelper({
     snakeCase: (input) => {
         return _.snakeCase(input);
     },
+    upperCase: (input) => {
+        return _.upperCase(input);
+    }
 });
 
 function escapeRegExp(str): string {
@@ -51,6 +54,7 @@ function replaceName(stringToReplace: string, name: string): string {
     result = replaceAll(result, "__snakeCase_name__", _.snakeCase(name));
     result = replaceAll(result, "__lowerDotCase_name__", _.snakeCase(name).replace(/_/g, "."));
     result = replaceAll(result, "__camelCase_name__", _.camelCase(name));
+    result = replaceAll(result, "__upperCase_name__", _.upperCase(name));
     return result;
 }
 
