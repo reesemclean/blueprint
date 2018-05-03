@@ -7,6 +7,10 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.1.0 - 2018-5-2]
+
+* Added upperCase and lowerCase as a new replacement option.
+
 ## [2.0.0 - 2018-4-30]
 
 * Added multi-folder support and support for expanding ~ (home) directory paths.

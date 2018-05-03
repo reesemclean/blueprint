@@ -58,6 +58,8 @@ Examples:
 
 | Helper Name  | Example Use In Templates | Example Use in File/Folder Names | Sample Result          |
 |--------------|--------------------------|----------------------------------|------------------------|
+| upperCase    | {{upperCase name}}       | \_\_upperCase_name\_\_               | THISISUPPERCASE        |
+| lowerCase    | {{lowerCase name}}       | \_\_lowerCase_name\_\_               | thisislowercase        |
 | camelCase    | {{camelCase name}}       | \_\_camelCase_name\_\_               | thisIsCamelCase        |
 | pascalCase   | {{pascalCase name}}      | \_\_pascalCase_name\_\_              | ThisIsPascalCase       |
 | snakeCase    | {{snakeCase name}}       | \_\_snakeCase_name\_\_               | this_is_snake_case     |
@@ -74,6 +76,10 @@ We will continue to add new templates that we think may be helpful to use!
 ## Known Issues
 
 ## Release Notes
+
+### 2.1.0
+
+Added two new transform helper: lowerCase and upperCase.
 
 ### 2.0.0
 

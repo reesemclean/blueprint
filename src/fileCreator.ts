@@ -26,6 +26,9 @@ handlebars.registerHelper({
     kebabCase: (input) => {
         return _.kebabCase(input);
     },
+    lowerCase: (input) => {
+        return _.lowerCase(input);
+    },
     lowerDotCase: (input) => {
         return _.snakeCase(input).replace(/_/g, ".");
     },
@@ -35,6 +38,9 @@ handlebars.registerHelper({
     snakeCase: (input) => {
         return _.snakeCase(input);
     },
+    upperCase: (input) => {
+        return _.upperCase(input);
+    },
 });
 
 function escapeRegExp(str): string {
@@ -42,7 +48,7 @@ function escapeRegExp(str): string {
 }
 
 function replaceAll(str, find, replace): string {
-  return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
+    return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
 }
 
 function replaceName(stringToReplace: string, name: string): string {
@@ -51,6 +57,8 @@ function replaceName(stringToReplace: string, name: string): string {
     result = replaceAll(result, "__snakeCase_name__", _.snakeCase(name));
     result = replaceAll(result, "__lowerDotCase_name__", _.snakeCase(name).replace(/_/g, "."));
     result = replaceAll(result, "__camelCase_name__", _.camelCase(name));
+    result = replaceAll(result, "__upperCase_name__", _.upperCase(name));
+    result = replaceAll(result, "__lowerCase_name__", _.lowerCase(name));
     return result;
 }
 
