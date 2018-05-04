@@ -10,7 +10,7 @@ import * as constants from "./constants";
 import { CancelError } from "./customErrors";
 import { IFileCreatorInputData } from "./fileCreator";
 
-interface TemplateQuickPickItem extends vscode.QuickPickItem {
+interface ITemplateQuickPickItem extends vscode.QuickPickItem {
     filePath: string;
 }
 
@@ -46,7 +46,7 @@ export class InputController {
     private showTemplatePickerDialog(templateFolderPaths: string[]): Promise<string> {
         return new Promise((resolve, reject) => {
 
-            const quickPickItems: TemplateQuickPickItem[] = templateFolderPaths
+            const quickPickItems: ITemplateQuickPickItem[] = templateFolderPaths
                 .map(folderPath => {
                     return this.quickPickItemsForFolder(folderPath);
                 })
@@ -82,17 +82,17 @@ export class InputController {
         });
     }
 
-    private quickPickItemsForFolder(folderPath: string): TemplateQuickPickItem[] {
+    private quickPickItemsForFolder(folderPath: string): ITemplateQuickPickItem[] {
         try {
             const expandedFolderPath = this.expandFolderPath(folderPath);
             const templateNames = this.availableTemplateNames(expandedFolderPath);
 
-            const items: TemplateQuickPickItem[] = templateNames.map((name, index) => {
+            const items: ITemplateQuickPickItem[] = templateNames.map((name, index) => {
                 return {
+                    description: index === 0 ? folderPath : "",
+                    filePath: path.join(expandedFolderPath, name),
                     label: name,
-                    description: index === 0 ? folderPath : '',
-                    filePath: path.join(expandedFolderPath, name)
-                }
+                };
             });
             return items;
 
