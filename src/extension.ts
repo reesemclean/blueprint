@@ -1,7 +1,6 @@
 "use strict";
 
 import * as fs from "fs";
-import * as os from "os";
 import * as path from "path";
 import * as vscode from "vscode";
 
@@ -20,28 +19,11 @@ export function activate(context: vscode.ExtensionContext) {
       directoryPath = path.dirname(directoryPath);
     }
 
-    const templateFolderRelativePaths = vscode.workspace
+    const templateFolderRawPaths = vscode.workspace
       .getConfiguration("blueprint")
       .get("templatesPath") as string[];
 
-    const templateFolderPaths = templateFolderRelativePaths.map((templatePath) => {
-
-      const normalizedPath = path.normalize(templatePath);
-      let result = templatePath;
-
-      if (normalizedPath.substring(0, 1) === "~") {
-        const home = os.homedir();
-        const subPath = normalizedPath.substring(1, normalizedPath.length);
-        result = path.join(home, subPath);
-      } else {
-        result = path.resolve(vscode.workspace.rootPath, templatePath);
-      }
-
-      return result;
-
-    });
-
-    const inputController = new InputController(templateFolderPaths, directoryPath);
+    const inputController = new InputController(templateFolderRawPaths, directoryPath);
 
     inputController.run()
       .then((data) => {

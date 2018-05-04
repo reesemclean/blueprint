@@ -2,6 +2,7 @@
 
 import * as fs from "fs";
 import * as _ from "lodash";
+import * as os from "os";
 import * as path from "path";
 import * as vscode from "vscode";
 import * as constants from "./constants";
@@ -9,16 +10,20 @@ import * as constants from "./constants";
 import { CancelError } from "./customErrors";
 import { IFileCreatorInputData } from "./fileCreator";
 
+interface TemplateQuickPickItem extends vscode.QuickPickItem {
+    filePath: string;
+}
+
 export class InputController {
 
-    constructor(private templateFolderPath: string[], private directoryPathToCreateAt: string) { }
+    constructor(private templateFolderPaths: string[], private directoryPathToCreateAt: string) { }
 
     public run(): Promise<IFileCreatorInputData> {
 
         let templateDirectory: string;
         let inputName: string;
 
-        return this.showTemplatePickerDialog(this.templateFolderPath)
+        return this.showTemplatePickerDialog(this.templateFolderPaths)
             .then((value) => {
                 templateDirectory = value;
                 return this.showNameInputDialog();
@@ -38,27 +43,18 @@ export class InputController {
 
     }
 
-    private showTemplatePickerDialog(templateFolderPath: string[]): Promise<string> {
+    private showTemplatePickerDialog(templateFolderPaths: string[]): Promise<string> {
         return new Promise((resolve, reject) => {
-            let templates: string[] = [];
 
-            for (const templatePath of templateFolderPath) {
-                let templateNames: string[];
-                try {
-                    templateNames = this.availableTemplateNames(templatePath);
+            const quickPickItems: TemplateQuickPickItem[] = templateFolderPaths
+                .map(folderPath => {
+                    return this.quickPickItemsForFolder(folderPath);
+                })
+                .reduce((prev, curr) => {
+                    return prev.concat(curr);
+                }, []);
 
-                    const templateObject: string[] = templateNames.map((name) => {
-                        return path.join(templatePath, name);
-                    });
-
-                    templates = templates.concat(templateObject);
-                } catch (error) {
-                    // tslint:disable-next-line
-                    console.log(`Error loading template path: ${templatePath}, error:  ${error}`);
-                }
-            }
-
-            if (templates.length === 0) {
+            if (quickPickItems.length === 0) {
                 // tslint:disable-next-line:max-line-length
                 reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
                 return;
@@ -66,7 +62,7 @@ export class InputController {
 
             const placeHolder = "Which template would you like to use?";
 
-            vscode.window.showQuickPick(templates, {
+            vscode.window.showQuickPick(quickPickItems, {
                 placeHolder,
                 ignoreFocusOut: true,
             }).then(
@@ -78,12 +74,51 @@ export class InputController {
                         reject(new Error("Unable to create file(s): No Template Selected"));
                     }
 
-                    resolve(value);
+                    resolve(value.filePath);
                 },
                 (errorReason) => {
                     reject(errorReason);
                 });
         });
+    }
+
+    private quickPickItemsForFolder(folderPath: string): TemplateQuickPickItem[] {
+        try {
+            const expandedFolderPath = this.expandFolderPath(folderPath);
+            const templateNames = this.availableTemplateNames(expandedFolderPath);
+
+            const items: TemplateQuickPickItem[] = templateNames.map((name, index) => {
+                return {
+                    label: name,
+                    description: index === 0 ? folderPath : '',
+                    filePath: path.join(expandedFolderPath, name)
+                }
+            });
+            return items;
+
+        } catch (error) {
+            // tslint:disable-next-line
+            console.log(`Error loading template path: ${folderPath}, error:  ${error}`);
+            return [];
+        }
+
+    }
+
+    private expandFolderPath(folderPath: string): string {
+
+        const normalizedPath = path.normalize(folderPath);
+        let result = folderPath;
+
+        if (normalizedPath.substring(0, 1) === "~") {
+            const home = os.homedir();
+            const subPath = normalizedPath.substring(1, normalizedPath.length);
+            result = path.join(home, subPath);
+        } else {
+            result = path.resolve(vscode.workspace.rootPath, folderPath);
+        }
+
+        return result;
+
     }
 
     private showNameInputDialog(): Promise<string> {
