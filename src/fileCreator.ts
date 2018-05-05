@@ -70,8 +70,24 @@ function getTemplateFileNamesAtTemplateDirectory(templateFolderPath: string): st
             return !fs.statSync(folderPath).isDirectory();
         })
         .filter((f) => f !== constants.MANIFEST_FILE_NAME)
-        .filter((f) => !f.startsWith("."));
+        .filter((f) => !shouldIgnoreFileName(f));
     return files;
+}
+
+function shouldIgnoreFileName(fileName: string): boolean {
+
+    const ignoredFileNames = [
+        ".DS_Store",
+        ".DS_Store?",
+        "._*",
+        ".Spotlight-V100",
+        ".Trashes",
+        "ehthumbs.db",
+        "Thumbs.db"
+    ];
+
+    return ignoredFileNames.some(ignoredFileName => fileName.startsWith(ignoredFileName));
+
 }
 
 function getFolderNamesAtDirectory(directoryPath: string): string[] {
@@ -81,8 +97,7 @@ function getFolderNamesAtDirectory(directoryPath: string): string[] {
             const folderPath = path.join(directoryPath, f);
             return fs.statSync(folderPath).isDirectory();
         })
-        .filter((f) => f !== constants.MANIFEST_FILE_NAME)
-        .filter((f) => !f.startsWith("."));
+        .filter((f) => f !== constants.MANIFEST_FILE_NAME);
     return folderNames;
 }
 
