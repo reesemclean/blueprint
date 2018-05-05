@@ -83,7 +83,7 @@ function shouldIgnoreFileName(fileName: string): boolean {
         ".Spotlight-V100",
         ".Trashes",
         "ehthumbs.db",
-        "Thumbs.db"
+        "Thumbs.db",
     ];
 
     return ignoredFileNames.some(ignoredFileName => fileName.startsWith(ignoredFileName));
