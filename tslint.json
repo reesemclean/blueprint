@@ -3,9 +3,9 @@
     "extends": [
         "tslint:recommended"
     ],
-    "jsRules": {
+    "jsRules": {},
+    "rules": {
         "arrow-parens": false
     },
-    "rules": {},
     "rulesDirectory": []
 }
