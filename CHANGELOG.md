@@ -7,8 +7,10 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-* Formats how templates are displayed in the selection menu
+## [2.1.0 - 2018-05-06]
+ 
 * Only ignore OS created files (.DS_Store, Thumbs.db, etc.) instead of all hidden files and folders
+* Display template selection menu in a user friendly way
 * Added upperCase and lowerCase as a new replacement option.
 
 ## [2.0.0 - 2018-4-30]

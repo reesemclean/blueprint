@@ -79,7 +79,11 @@ We will continue to add new templates that we think may be helpful to use!
 
 ### 2.1.0
 
-Added two new transform helper: lowerCase and upperCase.
+Cleanup of template selection user interface; the template name is now emphasized again.
+
+Allow templates to include hidden folders and files. System created files (Thumbs.db, .DS_Store, etc. are still ignored).
+
+Added two new transform helpers: lowerCase and upperCase.
 
 ### 2.0.0
 
