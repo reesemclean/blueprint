@@ -77,6 +77,10 @@ We will continue to add new templates that we think may be helpful to use!
 
 ## Release Notes
 
+### 2.1.1
+
+Bug Fix: Fixes detection of possible overwrites on file creation.
+
 ### 2.1.0
 
 Cleanup of template selection user interface; the template name is now emphasized again.

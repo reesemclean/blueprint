@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.1.1 - 2018-05-06]
+
 * Uses async/await
 * Fixes conflict detection
 
