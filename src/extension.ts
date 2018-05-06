@@ -6,8 +6,8 @@ import * as vscode from "vscode";
 
 import * as constants from "./constants";
 import { CancelError } from "./customErrors";
-import { FileCreator } from "./fileCreator";
-import { InputController } from "./inputController";
+import { FileCreator, IFileCreatorInputData } from "./fileCreator";
+import { getUserInput } from "./inputs";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -23,10 +23,14 @@ export function activate(context: vscode.ExtensionContext) {
       .getConfiguration("blueprint")
       .get("templatesPath") as string[];
 
-    const inputController = new InputController(templateFolderRawPaths, directoryPath);
-
     try {
-      const data = await inputController.run();
+      const userInput = await getUserInput(templateFolderRawPaths);
+
+      const data: IFileCreatorInputData = {
+        templateFolderPath: userInput.selectedTemplatePath,
+        pathToCreateAt: directoryPath,
+        inputName: userInput.inputName
+      }
 
       const fileCreator = new FileCreator(data);
       await fileCreator.createFiles();
