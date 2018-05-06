@@ -11,7 +11,7 @@ import { InputController } from "./inputController";
 
 export function activate(context: vscode.ExtensionContext) {
 
-  const disposable = vscode.commands.registerCommand("extension.blueprint", (e: vscode.Uri) => {
+  const disposable = vscode.commands.registerCommand("extension.blueprint", async (e: vscode.Uri) => {
 
     let directoryPath = (e && e.fsPath) ? e.fsPath : vscode.workspace.rootPath;
 
@@ -25,20 +25,22 @@ export function activate(context: vscode.ExtensionContext) {
 
     const inputController = new InputController(templateFolderRawPaths, directoryPath);
 
-    inputController.run()
-      .then((data) => {
-        const fileCreator = new FileCreator(data);
-        return fileCreator.createFiles();
-      })
-      .catch((error) => {
-        if (error instanceof CancelError) { return; }
+    const data = await inputController.run();
+    const fileCreator = new FileCreator(data);
 
-        const message: string = error.message ? error.message : "There was a problem creating your file(s).";
-        const isModal = message.startsWith(constants.ERROR_SETUP_MESSAGE_PREFIX);
+    try {
+      await fileCreator.createFiles();
+    } catch (error) {
 
-        const errorMessage = error.message ? error.message : "There was a problem creating your file(s).";
-        vscode.window.showErrorMessage(errorMessage, { modal: isModal });
-      });
+      if (error instanceof CancelError) { return; }
+
+      const message: string = error.message ? error.message : "There was a problem creating your file(s).";
+      const isModal = message.startsWith(constants.ERROR_SETUP_MESSAGE_PREFIX);
+
+      const errorMessage = error.message ? error.message : "There was a problem creating your file(s).";
+      vscode.window.showErrorMessage(errorMessage, { modal: isModal });
+    }
+
   });
 
   context.subscriptions.push(disposable);

@@ -121,111 +121,100 @@ function getTemplateContext(name: string): ITemplateContext {
         name,
     };
 }
+
 export class FileCreator {
 
     constructor(private data: IFileCreatorInputData) { }
 
-    public createFiles(): Promise<boolean> {
+    public async createFiles(): Promise<boolean> {
 
-        return new Promise((resolve, reject) => {
+        const templateDirectory = path.join(this.data.templateFolderPath);
+        const options = getTemplateManifestAtTemplateDirectory(templateDirectory);
 
-            const templateDirectory = path.join(this.data.templateFolderPath);
-            const options = getTemplateManifestAtTemplateDirectory(templateDirectory);
+        let nameToUse = this.data.inputName;
 
-            let nameToUse = this.data.inputName;
-
-            for (const suffixToIgnore of options.suffixesToIgnoreInInput) {
-                if (nameToUse.toLowerCase().endsWith(suffixToIgnore.toLowerCase())) {
-                    nameToUse = nameToUse.slice(0, nameToUse.length - suffixToIgnore.length);
-                }
+        for (const suffixToIgnore of options.suffixesToIgnoreInInput) {
+            if (nameToUse.toLowerCase().endsWith(suffixToIgnore.toLowerCase())) {
+                nameToUse = nameToUse.slice(0, nameToUse.length - suffixToIgnore.length);
             }
+        }
 
-            const templateContext = getTemplateContext(nameToUse);
+        const templateContext = getTemplateContext(nameToUse);
 
-            let directoryPathForFiles = this.data.pathToCreateAt;
+        let directoryPathForFiles = this.data.pathToCreateAt;
 
-            if (options.createFilesInFolderWithPattern) {
-                const folderName = replaceName(options.createFilesInFolderWithPattern, templateContext.name);
-                directoryPathForFiles = path.join(this.data.pathToCreateAt, folderName);
+        if (options.createFilesInFolderWithPattern) {
+            const folderName = replaceName(options.createFilesInFolderWithPattern, templateContext.name);
+            directoryPathForFiles = path.join(this.data.pathToCreateAt, folderName);
 
-                const pathExists = fs.existsSync(directoryPathForFiles);
+            const pathExists = fs.existsSync(directoryPathForFiles);
 
-                if (pathExists) {
-                    reject(new Error(`Folder already exists at path: ${directoryPathForFiles}`));
-                    return;
-                }
+            if (pathExists) {
+                throw new Error(`Folder already exists at path: ${directoryPathForFiles}`);
             }
+        }
 
-            const templateFolderPaths = getFolderPathsRecursively(templateDirectory);
-            const folderPathsToCreate = templateFolderPaths.map((templateFolderPath) => {
-                return path.join(directoryPathForFiles, replaceName(templateFolderPath, templateContext.name));
+        const templateFolderPaths = getFolderPathsRecursively(templateDirectory);
+        const folderPathsToCreate = templateFolderPaths.map((templateFolderPath) => {
+            return path.join(directoryPathForFiles, replaceName(templateFolderPath, templateContext.name));
+        });
+
+        let conflictingFolderPath: string;
+        for (const folderPath of folderPathsToCreate) {
+            if (fs.existsSync(folderPath)) {
+                conflictingFolderPath = folderPath;
+                break;
+            }
+        }
+
+        if (conflictingFolderPath) {
+            throw new Error(`Folder already exists at path: ${conflictingFolderPath}`);
+        }
+
+        const templateFilePaths = _.flatMap(templateFolderPaths.concat([""]), (templateFolderPath) => {
+            const fullTemplateFolderPath = path.join(templateDirectory, templateFolderPath);
+            const templateFileNames = getTemplateFileNamesAtTemplateDirectory(fullTemplateFolderPath);
+            return templateFileNames.map((templateFileName) => {
+                return path.join(templateFolderPath, templateFileName);
             });
+        });
 
-            let conflictingFolderPath: string;
-            for (const folderPath of folderPathsToCreate) {
-                if (fs.existsSync(path.join(directoryPathForFiles, folderPath))) {
-                    conflictingFolderPath = folderPath;
-                    break;
-                }
+        const filePathsToCreate = templateFilePaths.map((templateFilePath) => {
+            return path.join(directoryPathForFiles, replaceName(templateFilePath, templateContext.name));
+        });
+
+        let conflictingFilePath: string;
+        for (const filePath of filePathsToCreate) {
+            if (fs.existsSync(filePath)) {
+                conflictingFilePath = filePath;
+                break;
             }
+        }
 
-            if (conflictingFolderPath) {
-                reject(new Error(`Folder already exists at path: ${conflictingFolderPath}`));
-                return;
-            }
+        if (conflictingFilePath) {
+            throw new Error(`File already exists at path: ${conflictingFilePath}`);
+        }
 
-            const templateFilePaths = _.flatMap(templateFolderPaths.concat([""]), (templateFolderPath) => {
-                const fullTemplateFolderPath = path.join(templateDirectory, templateFolderPath);
-                const templateFileNames = getTemplateFileNamesAtTemplateDirectory(fullTemplateFolderPath);
-                return templateFileNames.map((templateFileName) => {
-                    return path.join(templateFolderPath, templateFileName);
-                });
-            });
-            const filePathsToCreate = templateFilePaths.map((templateFilePath) => {
-                return path.join(directoryPathForFiles, replaceName(templateFilePath, templateContext.name));
-            });
+        mkdirp.sync(directoryPathForFiles);
 
-            let conflictingFilePath: string;
-            for (const filePath of filePathsToCreate) {
-                if (fs.existsSync(filePath)) {
-                    conflictingFilePath = filePath;
-                    break;
-                }
-            }
+        folderPathsToCreate.forEach((folderPath) => mkdirp.sync(folderPath));
 
-            if (conflictingFilePath) {
-                reject(new Error(`File already exists at path: ${conflictingFilePath}`));
-                return;
-            }
+        const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFilePaths, filePathsToCreate);
 
-            mkdirp.sync(directoryPathForFiles);
+        Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFilePath) => {
 
-            folderPathsToCreate.forEach((folderPath) => mkdirp.sync(folderPath));
+            const rawTemplateContent = fs.readFileSync(
+                path.join(templateDirectory, templateFilePath),
+                "utf8",
+            );
+            const template = handlebars.compile(rawTemplateContent);
+            const content = template(templateContext);
 
-            const templateFileNameToFilePathToCreateMapping = _.zipObject(templateFilePaths, filePathsToCreate);
-            Object.keys(templateFileNameToFilePathToCreateMapping).forEach((templateFilePath) => {
-
-                const rawTemplateContent = fs.readFileSync(
-                    path.join(templateDirectory, templateFilePath),
-                    "utf8",
-                );
-                const template = handlebars.compile(rawTemplateContent);
-                const content = template(templateContext);
-
-                fs.appendFile(templateFileNameToFilePathToCreateMapping[templateFilePath], content, (error) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    resolve(true);
-                    return;
-                });
-
-            });
+            fs.writeFileSync(templateFileNameToFilePathToCreateMapping[templateFilePath], content);
 
         });
 
+        return true;
     }
 
 }

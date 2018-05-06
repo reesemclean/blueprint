@@ -18,7 +18,7 @@ export class InputController {
 
     constructor(private templateFolderPaths: string[], private directoryPathToCreateAt: string) { }
 
-    public run(): Promise<IFileCreatorInputData> {
+    public async run(): Promise<IFileCreatorInputData> {
 
         let templateDirectory: string;
         let inputName: string;
@@ -43,43 +43,34 @@ export class InputController {
 
     }
 
-    private showTemplatePickerDialog(templateFolderPaths: string[]): Promise<string> {
-        return new Promise((resolve, reject) => {
+    private async showTemplatePickerDialog(templateFolderPaths: string[]): Promise<string> {
 
-            const quickPickItems: ITemplateQuickPickItem[] = templateFolderPaths
-                .map(folderPath => {
-                    return this.quickPickItemsForFolder(folderPath);
-                })
-                .reduce((prev, curr) => {
-                    return prev.concat(curr);
-                }, []);
+        const quickPickItems: ITemplateQuickPickItem[] = templateFolderPaths
+            .map(folderPath => {
+                return this.quickPickItemsForFolder(folderPath);
+            })
+            .reduce((prev, curr) => {
+                return prev.concat(curr);
+            }, []);
 
-            if (quickPickItems.length === 0) {
-                // tslint:disable-next-line:max-line-length
-                reject(new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`));
-                return;
-            }
+        if (quickPickItems.length === 0) {
+            // tslint:disable-next-line:max-line-length
+            throw new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`);
+        }
 
-            const placeHolder = "Which template would you like to use?";
+        const placeHolder = "Which template would you like to use?";
 
-            vscode.window.showQuickPick(quickPickItems, {
-                placeHolder,
-                ignoreFocusOut: true,
-            }).then(
-                (value) => {
-                    if (value === undefined) {
-                        return Promise.reject(new CancelError("escape was pressed"));
-                    }
-                    if (!value) {
-                        reject(new Error("Unable to create file(s): No Template Selected"));
-                    }
+        const result = await vscode.window.showQuickPick(quickPickItems, { placeHolder, ignoreFocusOut: true });
 
-                    resolve(value.filePath);
-                },
-                (errorReason) => {
-                    reject(errorReason);
-                });
-        });
+        if (result === undefined) {
+            throw new CancelError("escape was pressed");
+        }
+        if (!result) {
+            throw new Error("Unable to create file(s): No Template Selected");
+        }
+
+        return result.filePath;
+
     }
 
     private quickPickItemsForFolder(folderPath: string): ITemplateQuickPickItem[] {
