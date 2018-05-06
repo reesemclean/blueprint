@@ -7,6 +7,9 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Uses async/await
+* Fixes conflict detection
+
 ## [2.1.0 - 2018-05-06]
  
 * Only ignore OS created files (.DS_Store, Thumbs.db, etc.) instead of all hidden files and folders

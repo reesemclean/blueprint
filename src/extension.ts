@@ -25,13 +25,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     const inputController = new InputController(templateFolderRawPaths, directoryPath);
 
-    const data = await inputController.run();
-    const fileCreator = new FileCreator(data);
-
     try {
-      await fileCreator.createFiles();
-    } catch (error) {
+      const data = await inputController.run();
 
+      const fileCreator = new FileCreator(data);
+      await fileCreator.createFiles();
+
+    } catch (error) {
       if (error instanceof CancelError) { return; }
 
       const message: string = error.message ? error.message : "There was a problem creating your file(s).";
