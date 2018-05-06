@@ -7,8 +7,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.1.0 - 2018-5-2]
-
+* Only ignore OS created files (.DS_Store, Thumbs.db, etc.) instead of all hidden files and folders
 * Added upperCase and lowerCase as a new replacement option.
 
 ## [2.0.0 - 2018-4-30]
