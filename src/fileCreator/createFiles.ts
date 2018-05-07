@@ -63,6 +63,7 @@ export async function createFiles(userInput: IUserInput, inDirectory: string) {
 
     try {
       fs.copySync(pathToContents, finalPath, { overwrite: false, errorOnExist: true, recursive: true });
+      fs.removeSync(temporaryDirectory);
     } catch (e) {
       if (e.code === 'EEXIST') {
         throw new Error(`File already exists at path: ${finalPath}`);
