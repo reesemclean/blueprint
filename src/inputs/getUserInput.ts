@@ -15,7 +15,7 @@ export async function getUserInput(availableTemplatePaths: string[]): Promise<IU
 
     return {
         inputName,
-        selectedTemplatePath
-    }
+        selectedTemplatePath,
+    };
 
 }

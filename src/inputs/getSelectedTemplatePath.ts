@@ -6,7 +6,7 @@ import * as path from "path";
 import * as vscode from "vscode";
 
 import * as constants from "../constants";
-import { CancelError } from "../customErrors";
+import { CancelError, NoTemplateSelectedError, SetupError } from "../errors";
 
 interface ITemplateQuickPickItem extends vscode.QuickPickItem {
   filePath: string;
@@ -23,8 +23,7 @@ export async function getSelectedTemplatePath(availableTemplatePaths: string[]):
     }, []);
 
   if (quickPickItems.length === 0) {
-    // tslint:disable-next-line:max-line-length
-    throw new Error(`${constants.ERROR_SETUP_MESSAGE_PREFIX} No templates found. Please see ${constants.README_URL} for information on setting up Blueprint in your project.`);
+    throw new SetupError();
   }
 
   const placeHolder = "Which template would you like to use?";
@@ -32,10 +31,10 @@ export async function getSelectedTemplatePath(availableTemplatePaths: string[]):
   const result = await vscode.window.showQuickPick(quickPickItems, { placeHolder, ignoreFocusOut: true });
 
   if (result === undefined) {
-    throw new CancelError("escape was pressed");
+    throw new CancelError();
   }
   if (!result) {
-    throw new Error("Unable to create file(s): No Template Selected");
+    throw new NoTemplateSelectedError();
   }
 
   return result.filePath;

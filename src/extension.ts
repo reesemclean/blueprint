@@ -1,12 +1,12 @@
 "use strict";
 
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
 import * as vscode from "vscode";
 
+import { handleError } from "./errors";
 import { createFiles } from "./fileCreator";
 import { getUserInput } from "./inputs";
-import { handleError } from './errorHandler';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     let directoryPath = (e && e.fsPath) ? e.fsPath : vscode.workspace.rootPath;
 
-    if (!fs.statSync(directoryPath).isDirectory()) {
+    if (!(await fs.stat(directoryPath)).isDirectory()) {
       directoryPath = path.dirname(directoryPath);
     }
 
