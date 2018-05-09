@@ -1,3 +1,5 @@
+"use strict";
+
 import * as handlebars from "handlebars";
 import * as _ from "lodash";
 

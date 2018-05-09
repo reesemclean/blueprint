@@ -1,3 +1,5 @@
+"use strict";
+
 import { ITemplateManifest } from "../getTemplateManifest";
 
 import * as _ from "lodash";
