@@ -66,6 +66,15 @@ Examples:
 | kebabCase    | {{kebabCase name}}       | \_\_kebabCase_name\_\_               | this-is-kebab-case     |
 | lowerDotCase | {{lowerDotCase name}}    | \_\_lowerDotCase_name\_\_            | this.is.lower.dot.case |
 
+## manifest.json
+
+You can optionally include a "manifest.json" file in your template folders. This enables a few additionally points of customization.
+
+key | Description of Use
+------------ | -------------
+suffixesToIgnoreInInput | If the value is "component" for instance, if user enters "My First Component" as the input -- "My First" will be used in the substitutions. This is to enable you to put "Component" in the template and not have to worry about the user entering it or not.
+createFilesInFolderWithPattern (DEPRECATED) | Create your template files within a folder -- uses the same transfrom as you would use during naming your files and folders. _This is possible now by just creating a top-level folder in your template. Previously we did not support folders within folders. You should use that technique instead of using this key._
+
 ## Examples
 
 Example templates can be found here:
