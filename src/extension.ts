@@ -1,13 +1,12 @@
 "use strict";
 
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
 import * as vscode from "vscode";
 
-import * as constants from "./constants";
-import { CancelError } from "./customErrors";
-import { FileCreator } from "./fileCreator";
-import { InputController } from "./inputController";
+import { handleError } from "./errors";
+import { createFiles } from "./fileCreator";
+import { getUserInput } from "./inputs";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -15,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     let directoryPath = (e && e.fsPath) ? e.fsPath : vscode.workspace.rootPath;
 
-    if (!fs.statSync(directoryPath).isDirectory()) {
+    if (!(await fs.stat(directoryPath)).isDirectory()) {
       directoryPath = path.dirname(directoryPath);
     }
 
@@ -23,27 +22,14 @@ export function activate(context: vscode.ExtensionContext) {
       .getConfiguration("blueprint")
       .get("templatesPath") as string[];
 
-    const inputController = new InputController(templateFolderRawPaths, directoryPath);
-
     try {
-      const data = await inputController.run();
-
-      const fileCreator = new FileCreator(data);
-      await fileCreator.createFiles();
-
+      const userInput = await getUserInput(templateFolderRawPaths);
+      await createFiles(userInput, directoryPath);
     } catch (error) {
-      if (error instanceof CancelError) { return; }
-
-      const message: string = error.message ? error.message : "There was a problem creating your file(s).";
-      const isModal = message.startsWith(constants.ERROR_SETUP_MESSAGE_PREFIX);
-
-      const errorMessage = error.message ? error.message : "There was a problem creating your file(s).";
-      vscode.window.showErrorMessage(errorMessage, { modal: isModal });
+      handleError(error);
     }
 
   });
 
   context.subscriptions.push(disposable);
 }
-
-// export function deactivate() {}
