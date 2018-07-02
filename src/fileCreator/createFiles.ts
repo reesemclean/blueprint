@@ -100,7 +100,11 @@ async function createFilesForTemplateFolder(
 
         await fs.writeFile(destinationPath, content);
       } catch (e) {
-        await fs.copy(path.join(templateFolderPath, templateFilePath), destinationPath);
+        if (e.message.startsWith("Lexical error")) {
+          await fs.copy(path.join(templateFolderPath, templateFilePath), destinationPath);
+        } else {
+          throw e;
+        }
       }
 
     }),
