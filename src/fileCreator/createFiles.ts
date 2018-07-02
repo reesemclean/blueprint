@@ -88,15 +88,20 @@ async function createFilesForTemplateFolder(
   await Promise.all(
     templateFilesInFolder.map(async (templateFilePath) => {
 
-      const rawTemplateContent = fs.readFileSync(
-        path.join(templateFolderPath, templateFilePath),
-        "utf8",
-      );
-
-      const content = replaceTemplateContent(rawTemplateContent, name);
       const fileName = replaceStringUsingTransforms(templateFilePath, name);
+      const destinationPath = path.join(inDirectory, fileName);
 
-      await fs.writeFile(path.join(inDirectory, fileName), content);
+      try {
+        const rawTemplateContent = fs.readFileSync(
+          path.join(templateFolderPath, templateFilePath),
+          "utf8",
+        );
+        const content = replaceTemplateContent(rawTemplateContent, name);
+
+        await fs.writeFile(destinationPath, content);
+      } catch (e) {
+        await fs.copy(path.join(templateFolderPath, templateFilePath), destinationPath);
+      }
 
     }),
   );
