@@ -1,5 +1,7 @@
 out
+test/integrationTests/actualOutput
 vscode-test/
+.vscode-test/
 
 ### Linux ###
 *~

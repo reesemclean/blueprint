@@ -7,6 +7,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Skip content replacement on files that cannot be Utf-8 decoded. Useful for non-text files like images and video.
 * Restructure codebase
 
 ## [2.1.1 - 2018-05-06]

@@ -62,7 +62,7 @@ function quickPickItemsForFolder(folderPath: string) {
   }
 }
 
-function expandFolderPath(folderPath: string): string {
+export function expandFolderPath(folderPath: string): string {
 
   const normalizedPath = path.normalize(folderPath);
   let result = folderPath;
