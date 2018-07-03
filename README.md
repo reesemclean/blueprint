@@ -86,6 +86,10 @@ We will continue to add new templates that we think may be helpful to use!
 
 ## Release Notes
 
+### 2.2.0
+
+* Skip content replacement on files that cannot read by handlebars. Useful for non-text files like images and video.
+
 ### 2.1.1
 
 Bug Fix: Fixes detection of possible overwrites on file creation.
