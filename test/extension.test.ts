@@ -50,6 +50,9 @@ suite("Extension Tests", () => {
                 options
             );
             assert.equal(result.same, true);
+        }).catch(e => {
+            console.log(e);
+            throw e;
         });
     };
 
@@ -57,6 +60,20 @@ suite("Extension Tests", () => {
     test("includesImages", (done) => {
         beforeEach();
         runTestForTemplateNamed("includesImages").then(() => {
+            done();
+        });
+    });
+
+    test("nestedFolders", (done) => {
+        beforeEach();
+        runTestForTemplateNamed("nestedFolders").then(() => {
+            done();
+        });
+    });
+
+    test("transforms", (done) => {
+        beforeEach();
+        runTestForTemplateNamed("transforms").then(() => {
             done();
         });
     });
