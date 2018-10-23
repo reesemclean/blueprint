@@ -14,8 +14,8 @@ before_install:
     fi
 
 before_script:
-  - nvm install 6.9.1
-  - nvm use 6.9.1
+  - nvm install 8.9.3
+  - nvm use 8.9.3
   - npm install -g yarn
   - yarn install
   - yarn run vscode:prepublish
