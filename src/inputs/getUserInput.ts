@@ -8,10 +8,18 @@ export interface IUserInput {
     selectedTemplatePath: string;
 }
 
+export interface IMultiStepData {
+    totalSteps: number;
+    step: number;
+    title: string;
+}
+
 export async function getUserInput(availableTemplatePaths: string[]): Promise<IUserInput> {
 
-    const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths);
-    const inputName = await getDesiredName();
+    const totalSteps = 2;
+    const title = "New File from Template";
+    const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths, { totalSteps, step: 1, title });
+    const inputName = await getDesiredName({ totalSteps, step: 2, title });
 
     return {
         inputName,

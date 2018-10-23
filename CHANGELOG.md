@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Adds number of steps and current step to UI for user input
+
 ## [2.2.0 - 2018-07-02]
 
 * Skip content replacement on files that cannot read by handlebars. Useful for non-text files like images and video.

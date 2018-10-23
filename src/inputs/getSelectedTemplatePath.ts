@@ -3,15 +3,19 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import * as vscode from "vscode";
+import { Disposable, QuickPickItem, window, workspace } from "vscode";
 
-import { CancelError, NoTemplateSelectedError, SetupError } from "../errors";
+import { NoTemplateSelectedError, SetupError } from "../errors";
+import { IMultiStepData } from "./getUserInput";
 
-interface ITemplateQuickPickItem extends vscode.QuickPickItem {
+interface ITemplateQuickPickItem extends QuickPickItem {
   filePath: string;
 }
 
-export async function getSelectedTemplatePath(availableTemplatePaths: string[]): Promise<string> {
+export async function getSelectedTemplatePath(
+  availableTemplatePaths: string[],
+  multiStep: IMultiStepData,
+): Promise<string> {
 
   const quickPickItems: ITemplateQuickPickItem[] = availableTemplatePaths
     .map(folderPath => {
@@ -25,18 +29,31 @@ export async function getSelectedTemplatePath(availableTemplatePaths: string[]):
     throw new SetupError();
   }
 
-  const placeHolder = "Which template would you like to use?";
+  const disposables: Disposable[] = [];
+  try {
+    return await new Promise<string>((resolve, reject) => {
+      const input = window.createQuickPick<ITemplateQuickPickItem>();
+      input.items = quickPickItems;
+      input.placeholder = "Which template would you like to use?";
+      input.ignoreFocusOut = true;
+      input.step = multiStep.step;
+      input.totalSteps = multiStep.totalSteps;
+      input.title = multiStep.title;
+      disposables.push(
+        input.onDidChangeSelection(items => {
+          if (items.length === 0) {
+            reject(new NoTemplateSelectedError());
+            return;
+          }
+          resolve(items[0].filePath);
+        }),
+      );
 
-  const result = await vscode.window.showQuickPick(quickPickItems, { placeHolder, ignoreFocusOut: true });
-
-  if (result === undefined) {
-    throw new CancelError();
+      input.show();
+    });
+  } finally {
+    disposables.forEach(d => d.dispose());
   }
-  if (!result) {
-    throw new NoTemplateSelectedError();
-  }
-
-  return result.filePath;
 
 }
 
@@ -71,7 +88,7 @@ export function expandFolderPath(folderPath: string): string {
     const subPath = normalizedPath.substring(1, normalizedPath.length);
     result = path.join(home, subPath);
   } else {
-    result = path.resolve(vscode.workspace.rootPath, folderPath);
+    result = path.resolve(workspace.rootPath, folderPath);
   }
 
   return result;
