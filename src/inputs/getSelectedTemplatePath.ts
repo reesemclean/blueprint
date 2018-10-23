@@ -5,7 +5,6 @@ import * as os from "os";
 import * as path from "path";
 import * as vscode from "vscode";
 
-import * as constants from "../constants";
 import { CancelError, NoTemplateSelectedError, SetupError } from "../errors";
 
 interface ITemplateQuickPickItem extends vscode.QuickPickItem {

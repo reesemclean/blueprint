@@ -4,7 +4,6 @@ import * as fs from "fs-extra";
 import * as os from "os";
 import * as path from "path";
 
-import * as constants from "../constants";
 import { WriteConflictError } from "../errors";
 import { getTemplateManifestAtTemplateDirectory } from "../getTemplateManifest";
 import { getFolderNamesAtDirectory, getTemplateFileNamesAtTemplateDirectory } from "./getTemplateFilesAndFolders";

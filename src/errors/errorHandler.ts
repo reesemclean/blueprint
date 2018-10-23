@@ -2,8 +2,7 @@
 
 import * as vscode from "vscode";
 
-import * as constants from "../constants";
-import { AppError, CancelError, SetupError } from "./customErrors";
+import { AppError } from "./customErrors";
 
 const defaultErrorMessage = "There was a problem creating your file(s).";
 
