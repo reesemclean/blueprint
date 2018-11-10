@@ -30,7 +30,7 @@ export function initializeHandlebars() {
     },
     upperSnakeCase: (input) => {
       return _.snakeCase(input).toUpperCase();
-    }
+    },
   });
 }
 
