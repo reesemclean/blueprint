@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Adds UPPER_SNAKE_CASE transform (__upperSnakeCase_name__ or {{upperSnakeCase name}})
+* Adds ability to use no transform for files names (use __name__ token)
 * Adds number of steps and current step to UI for user input
 
 ## [2.2.0 - 2018-07-02]

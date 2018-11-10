@@ -28,6 +28,9 @@ export function initializeHandlebars() {
     upperCase: (input) => {
       return _.upperCase(input);
     },
+    upperSnakeCase: (input) => {
+      return _.snakeCase(input).toUpperCase();
+    }
   });
 }
 
@@ -49,13 +52,15 @@ export function replaceTemplateContent(rawContent: string, name: string): string
 }
 
 export function replaceStringUsingTransforms(stringToReplace: string, name: string): string {
-  let result = replaceAll(stringToReplace, "__kebabCase_name__", _.kebabCase(name));
+  let result = replaceAll(stringToReplace, "__name__", name);
+  result = replaceAll(result, "__kebabCase_name__", _.kebabCase(name));
   result = replaceAll(result, "__pascalCase_name__", _.chain(name).camelCase().upperFirst().value());
   result = replaceAll(result, "__snakeCase_name__", _.snakeCase(name));
   result = replaceAll(result, "__lowerDotCase_name__", _.snakeCase(name).replace(/_/g, "."));
   result = replaceAll(result, "__camelCase_name__", _.camelCase(name));
   result = replaceAll(result, "__upperCase_name__", _.upperCase(name));
   result = replaceAll(result, "__lowerCase_name__", _.lowerCase(name));
+  result = replaceAll(result, "__upperSnakeCase_name__", _.snakeCase(name).toUpperCase());
   return result;
 }
 

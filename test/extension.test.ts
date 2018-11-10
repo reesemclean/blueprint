@@ -32,7 +32,7 @@ suite("Extension Tests", () => {
         const directoryPath = path.join(outPath, templateName);
 
         const userInput: IUserInput = {
-            inputName: "My User Input",
+            inputName: "MY User Input",
             selectedTemplatePath: path.join(templatesPath, templateName)
         };
 
