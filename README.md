@@ -86,6 +86,12 @@ We will continue to add new templates that we think may be helpful to use!
 
 ## Release Notes
 
+### 2.3.0
+
+* Adds UPPER_SNAKE_CASE transform (__upperSnakeCase_name__ or {{upperSnakeCase name}})
+* Adds ability to use no transform for files names (use __name__ token)
+* Adds number of steps and current step to UI for user input
+
 ### 2.2.0
 
 * Skip content replacement on files that cannot read by handlebars. Useful for non-text files like images and video.
