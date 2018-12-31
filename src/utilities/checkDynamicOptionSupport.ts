@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 
 import { recursivelyListAllFilePathsForTemplatePath } from "./getTemplateFilesAndFolders";
 
-export async function templatePathContainDynamicOptions(templatePath: string): Promise<boolean> {
+export async function templatePathContainsDynamicOptions(templatePath: string): Promise<boolean> {
   const fileList = await recursivelyListAllFilePathsForTemplatePath(templatePath);
 
   for (const filePath of fileList) {
