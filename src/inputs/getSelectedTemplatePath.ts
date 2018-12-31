@@ -37,7 +37,6 @@ export async function getSelectedTemplatePath(
       input.placeholder = "Which template would you like to use?";
       input.ignoreFocusOut = true;
       input.step = multiStep.step;
-      input.totalSteps = multiStep.totalSteps;
       input.title = multiStep.title;
       disposables.push(
         input.onDidChangeSelection(items => {

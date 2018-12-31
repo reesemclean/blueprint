@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { WriteConflictError } from "../errors";
 import { getTemplateManifestAtTemplateDirectory } from "../getTemplateManifest";
-import { getFolderNamesAtDirectory, getTemplateFileNamesAtTemplateDirectory } from "./getTemplateFilesAndFolders";
+import { getFolderNamesAtDirectory, getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
 import { replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
 
