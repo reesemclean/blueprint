@@ -22,8 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
       .getConfiguration("blueprint")
       .get("templatesPath") as string[];
 
+    const enableDynamicOptions = vscode.workspace
+      .getConfiguration("blueprint")
+      .get("enableDynamicOptions") as boolean;
+
     try {
-      const userInput = await getUserInput(templateFolderRawPaths);
+      const userInput = await getUserInput(templateFolderRawPaths, enableDynamicOptions);
       await createFiles(userInput, directoryPath);
     } catch (error) {
       handleError(error);

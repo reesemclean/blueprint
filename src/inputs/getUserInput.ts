@@ -16,14 +16,19 @@ export interface IMultiStepData {
     title: string;
 }
 
-export async function getUserInput(availableTemplatePaths: string[]): Promise<IUserInput> {
+export async function getUserInput(availableTemplatePaths: string[], enableDynamicOptions: boolean = false): Promise<IUserInput> {
 
-    const totalSteps = 3;
+    const totalSteps = enableDynamicOptions ? 3 : 2;
     const title = "New File from Template";
     const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths, { totalSteps, step: 1, title });
     const inputName = await getDesiredName({ totalSteps, step: 2, title });
-    const dynamicOptions = await getDynamicOptions({ totalSteps, step: 3, title });
 
+    var dynamicOptions = "";
+
+    if (enableDynamicOptions) {
+        dynamicOptions = await getDynamicOptions({ totalSteps, step: 3, title });
+    }
+    
     return {
         inputName,
         selectedTemplatePath,
