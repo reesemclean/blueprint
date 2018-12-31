@@ -2,10 +2,12 @@
 
 import { getDesiredName } from "./getDesiredName";
 import { getSelectedTemplatePath } from "./getSelectedTemplatePath";
+import { getDynamicOptions } from "./getDynamicOptions";
 
 export interface IUserInput {
     inputName: string;
     selectedTemplatePath: string;
+    dynamicOptions: string;
 }
 
 export interface IMultiStepData {
@@ -14,16 +16,22 @@ export interface IMultiStepData {
     title: string;
 }
 
-export async function getUserInput(availableTemplatePaths: string[]): Promise<IUserInput> {
+export async function getUserInput(availableTemplatePaths: string[], enableDynamicOptions: boolean = false): Promise<IUserInput> {
 
-    const totalSteps = 2;
+    const totalSteps = enableDynamicOptions ? 3 : 2;
     const title = "New File from Template";
     const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths, { totalSteps, step: 1, title });
     const inputName = await getDesiredName({ totalSteps, step: 2, title });
 
+    var dynamicOptions = "";
+
+    if (enableDynamicOptions) {
+        dynamicOptions = await getDynamicOptions({ totalSteps, step: 3, title });
+    }
+    
     return {
         inputName,
         selectedTemplatePath,
+        dynamicOptions: dynamicOptions
     };
-
 }

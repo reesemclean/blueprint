@@ -34,20 +34,27 @@ export function initializeHandlebars() {
   });
 }
 
-export function replaceTemplateContent(rawContent: string, name: string): string {
+export function replaceTemplateContent(rawContent: string, name: string, dynamicOptions: string): string {
 
   if (!handlebarsInitialized) {
     initializeHandlebars();
     handlebarsInitialized = true;
   }
 
-  const template = handlebars.compile(rawContent);
+  var content = rawContent;
+
+  if (dynamicOptions) {
+    content = replaceDynamicOptions(content, dynamicOptions);
+  }
+
+  const template = handlebars.compile(content);
 
   const context = {
     name,
   };
 
-  const content = template(context);
+  content = template(context);
+
   return content;
 }
 
@@ -70,4 +77,21 @@ function escapeRegExp(str): string {
 
 function replaceAll(str, find, replace): string {
   return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
+}
+
+function replaceDynamicOptions(content: string, dynamicOptions: string): string {
+
+  var result = content;
+
+  const options = dynamicOptions.split(";");
+
+  for (var i = 0; i < options.length; i++) {
+
+      const opt = options[i];
+      const handle = "{{$" + (i + 1) + "}}";
+
+      result = result.replace(handle, opt);
+  }
+  
+  return result;
 }

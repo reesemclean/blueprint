@@ -33,7 +33,8 @@ suite("Extension Tests", () => {
 
         const userInput: IUserInput = {
             inputName: "MY User Input",
-            selectedTemplatePath: path.join(templatesPath, templateName)
+            selectedTemplatePath: path.join(templatesPath, templateName),
+            dynamicOptions: ""
         };
 
         return createFiles(userInput, directoryPath).then(() => {
