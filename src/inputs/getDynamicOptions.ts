@@ -2,7 +2,6 @@
 
 import { Disposable, window } from "vscode";
 
-import { CancelError, NoNameGivenError } from "../errors";
 import { IMultiStepData } from "./getUserInput";
 
 export async function getDynamicOptions(multiStep: IMultiStepData): Promise<string> {
@@ -12,7 +11,6 @@ export async function getDynamicOptions(multiStep: IMultiStepData): Promise<stri
     return await new Promise<string>((resolve, reject) => {
       const input = window.createInputBox();
       input.step = multiStep.step;
-      input.totalSteps = multiStep.totalSteps;
       input.title = multiStep.title;
       input.ignoreFocusOut = true;
       input.value = "";

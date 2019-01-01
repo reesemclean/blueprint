@@ -5,6 +5,24 @@ import * as path from "path";
 
 import * as constants from "../constants";
 
+export async function recursivelyListAllFilePathsForTemplatePath(templatePath: string): Promise<string[]> {
+
+  const fileNamesInFolder = await getTemplateFileNamesAtTemplateDirectory(templatePath);
+  const filePathsInFolder = fileNamesInFolder.map(name => path.join(templatePath, name));
+
+  const folderNamesInFolder = await getFolderNamesAtDirectory(templatePath);
+  const folderPathsInFolder = folderNamesInFolder.map(name => path.join(templatePath, name));
+
+  const filesInFolders = await Promise.all(
+    folderPathsInFolder.map(async (folderName) => {
+      return await recursivelyListAllFilePathsForTemplatePath(folderName);
+    })
+  )
+  const flattenedFiles = filesInFolders.reduce((acc, val) => acc.concat(val), []);
+
+  return filePathsInFolder.concat(flattenedFiles);
+}
+
 export async function getFolderNamesAtDirectory(directoryPath: string): Promise<string[]> {
 
   const directoryContents = await fs.readdir(directoryPath);

@@ -12,7 +12,6 @@ export async function getDesiredName(multiStep: IMultiStepData): Promise<string>
     return await new Promise<string>((resolve, reject) => {
       const input = window.createInputBox();
       input.step = multiStep.step;
-      input.totalSteps = multiStep.totalSteps;
       input.title = multiStep.title;
       input.ignoreFocusOut = true;
       input.value = "";
