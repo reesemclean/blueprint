@@ -54,9 +54,9 @@ Examples:
 ]
 ```
 
-## Dynamic Options
+## Dynamic Template Variables
 
-Dynamic Options provide template replacements at the time of file creation. The dynamic replacement token should conform to the format of `{{$1}}` where `1` will be replaced by the first input in the delimited list. The number in the token represents the position of the replacement.
+Dynamic Template Variables provide template replacements at the time of file creation. The dynamic replacement token should conform to the format of `{{$1}}` where `1` will be replaced by the first input in the delimited list. The number in the token represents the position of the replacement.
 
 When a dynamic token is detected, a third dialog will appear during the `New file from template` workflow. This dialog will take a semicolon delimited list of inputs. Each input will be match to the appropriate replacement token.
 
@@ -109,10 +109,6 @@ We will continue to add new templates that we think may be helpful to use!
 ## Known Issues
 
 ## Release Notes
-
-### 2.4.0
-
-* Adds ability to provide dynamic template replacements at the time of file creation
 
 ### 2.3.0
 

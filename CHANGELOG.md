@@ -7,8 +7,6 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.4.0 - 2018-12-31]
-
 * Adds ability to provide dynamic template replacements at the time of file creation
 
 ## [2.3.0 - 2018-11-09]
