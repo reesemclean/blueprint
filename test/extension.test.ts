@@ -12,7 +12,7 @@ import * as path from "path";
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import { createFiles } from "../src/fileCreator";
-import { IUserInput, expandFolderPath } from "../src/inputs";
+import { IUserInput, expandFolderPath, IDynamicOptions } from "../src/inputs";
 
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", () => {
@@ -31,10 +31,12 @@ suite("Extension Tests", () => {
     const runTestForTemplateNamed = async (templateName: string) => {
         const directoryPath = path.join(outPath, templateName);
 
+        const dynamicOptions: IDynamicOptions[] = [];
+
         const userInput: IUserInput = {
             inputName: "MY User Input",
             selectedTemplatePath: path.join(templatesPath, templateName),
-            dynamicOptions: ""
+            dynamicOptions,
         };
 
         return createFiles(userInput, directoryPath).then(() => {
