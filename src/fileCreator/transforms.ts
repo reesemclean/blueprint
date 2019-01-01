@@ -48,13 +48,14 @@ export function replaceTemplateContent(rawContent: string, name: string, dynamic
     name,
   };
 
-  dynamicOptions.map(opt => {
-    context[cleanToken(opt.token)] = opt.input;
+  dynamicOptions.forEach(opt => {
+    context[opt.token] = opt.input;
   });
 
   const content = template(context);
 
   return content;
+
 }
 
 export function replaceStringUsingTransforms(stringToReplace: string, name: string): string {
@@ -76,8 +77,4 @@ function escapeRegExp(str): string {
 
 function replaceAll(str, find, replace): string {
   return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
-}
-
-function cleanToken(token): string {
-  return token.replace("{{", "").replace("}}", "");
 }
