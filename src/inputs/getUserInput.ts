@@ -1,9 +1,9 @@
 "use strict";
 
-import { getDesiredName } from "./getDesiredName";
-import { getSelectedTemplatePath } from "./getSelectedTemplatePath";
-import { getDynamicOptions } from "./getDynamicOptions";
 import { templatePathContainsDynamicOptions } from "../utilities/checkDynamicOptionSupport";
+import { getDesiredName } from "./getDesiredName";
+import { getDynamicOptions } from "./getDynamicOptions";
+import { getSelectedTemplatePath } from "./getSelectedTemplatePath";
 
 export interface IUserInput {
     inputName: string;
@@ -23,15 +23,15 @@ export async function getUserInput(availableTemplatePaths: string[]): Promise<IU
 
     const templateUsesDynamicOptions = await templatePathContainsDynamicOptions(selectedTemplatePath);
 
-    var dynamicOptions = "";
+    let dynamicOptions = "";
 
     if (templateUsesDynamicOptions) {
         dynamicOptions = await getDynamicOptions({ step: 3, title });
     }
 
     return {
+        dynamicOptions,
         inputName,
         selectedTemplatePath,
-        dynamicOptions: dynamicOptions
     };
 }

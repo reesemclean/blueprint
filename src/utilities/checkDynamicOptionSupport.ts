@@ -18,7 +18,7 @@ export async function templatePathContainsDynamicOptions(templatePath: string): 
 }
 
 async function findDynamicOptionTokenInFile(filePath: string): Promise<boolean> {
-  const regExp = /{{\s?\$1\s?}}/
+  const regExp = /{{\s?\$1\s?}}/;
   try {
     const rawTemplateContent = fs.readFileSync(
       filePath,

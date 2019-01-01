@@ -6,7 +6,8 @@ import * as path from "path";
 
 import { WriteConflictError } from "../errors";
 import { getTemplateManifestAtTemplateDirectory } from "../getTemplateManifest";
-import { getFolderNamesAtDirectory, getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
+import { getFolderNamesAtDirectory } from "../utilities/getTemplateFilesAndFolders";
+import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
 import { replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
 
@@ -24,7 +25,7 @@ export async function createFiles(userInput: IUserInput, inDirectory: string): P
     userInput.selectedTemplatePath,
     temporaryDirectory,
     userInput.inputName,
-    userInput.dynamicOptions
+    userInput.dynamicOptions,
   );
 
   let containerFolderName = "";

@@ -41,7 +41,7 @@ export function replaceTemplateContent(rawContent: string, name: string, dynamic
     handlebarsInitialized = true;
   }
 
-  var content = rawContent;
+  let content = rawContent;
 
   if (dynamicOptions) {
     content = replaceDynamicOptions(content, dynamicOptions);
@@ -81,17 +81,17 @@ function replaceAll(str, find, replace): string {
 
 function replaceDynamicOptions(content: string, dynamicOptions: string): string {
 
-  var result = content;
+  let result = content;
 
   const options = dynamicOptions.split(";");
 
-  for (var i = 0; i < options.length; i++) {
+  for (let i = 0; i < options.length; i++) {
 
       const opt = options[i];
       const handle = "{{$" + (i + 1) + "}}";
 
       result = result.replace(handle, opt);
   }
-  
+
   return result;
 }

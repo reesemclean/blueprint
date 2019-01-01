@@ -16,8 +16,8 @@ export async function recursivelyListAllFilePathsForTemplatePath(templatePath: s
   const filesInFolders = await Promise.all(
     folderPathsInFolder.map(async (folderName) => {
       return await recursivelyListAllFilePathsForTemplatePath(folderName);
-    })
-  )
+    }),
+  );
   const flattenedFiles = filesInFolders.reduce((acc, val) => acc.concat(val), []);
 
   return filePathsInFolder.concat(flattenedFiles);
