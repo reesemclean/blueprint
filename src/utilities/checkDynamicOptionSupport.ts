@@ -4,19 +4,6 @@ import * as fs from "fs-extra";
 
 import { recursivelyListAllFilePathsForTemplatePath } from "./getTemplateFilesAndFolders";
 
-export async function templatePathContainsDynamicOptions(templatePath: string): Promise<boolean> {
-  const fileList = await recursivelyListAllFilePathsForTemplatePath(templatePath);
-
-  for (const filePath of fileList) {
-    const result = await findDynamicOptionTokenInFile(filePath);
-    if (result) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 export async function getTemplatePathDynamicOptions(templatePath: string): Promise<string[]> {
   const fileList = await recursivelyListAllFilePathsForTemplatePath(templatePath);
 
@@ -51,18 +38,4 @@ async function findDynamicOptionTokensInFile(filePath: string): Promise<string[]
   }
 
   return result;
-}
-
-async function findDynamicOptionTokenInFile(filePath: string): Promise<boolean> {
-  const regExp = /{{\s?\$1\s?}}/;
-  try {
-    const rawTemplateContent = fs.readFileSync(
-      filePath,
-      "utf8",
-    );
-
-    return regExp.test(rawTemplateContent);
-  } catch (e) {
-    return false;
-  }
 }
