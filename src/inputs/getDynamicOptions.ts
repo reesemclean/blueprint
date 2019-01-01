@@ -4,7 +4,7 @@ import { Disposable, window } from "vscode";
 
 import { IMultiStepData } from "./getUserInput";
 
-export async function getDynamicOptions(multiStep: IMultiStepData): Promise<string> {
+export async function getDynamicOption(token: string, multiStep: IMultiStepData): Promise<string> {
   const disposables: Disposable[] = [];
 
   try {
@@ -14,7 +14,7 @@ export async function getDynamicOptions(multiStep: IMultiStepData): Promise<stri
       input.title = multiStep.title;
       input.ignoreFocusOut = true;
       input.value = "";
-      input.prompt = "Optional - Enter dynamic options separated by semicolons.";
+      input.prompt = "Enter value for " + token + ".";
 
       disposables.push(
         input.onDidAccept(() => {

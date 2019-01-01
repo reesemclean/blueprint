@@ -1,14 +1,14 @@
 "use strict";
 
-import { templatePathContainsDynamicOptions } from "../utilities/checkDynamicOptionSupport";
+import { getTemplatePathDynamicOptions } from "../utilities/checkDynamicOptionSupport";
 import { getDesiredName } from "./getDesiredName";
-import { getDynamicOptions } from "./getDynamicOptions";
+import { getDynamicOption } from "./getDynamicOptions";
 import { getSelectedTemplatePath } from "./getSelectedTemplatePath";
 
 export interface IUserInput {
     inputName: string;
     selectedTemplatePath: string;
-    dynamicOptions: string;
+    dynamicOptions: IDynamicOptions[];
 }
 
 export interface IMultiStepData {
@@ -16,17 +16,24 @@ export interface IMultiStepData {
     title: string;
 }
 
+export interface IDynamicOptions {
+    token: string;
+    input: string;
+}
+
 export async function getUserInput(availableTemplatePaths: string[]): Promise<IUserInput> {
+    let stepCount = 1;
     const title = "New File from Template";
-    const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths, { step: 1, title });
-    const inputName = await getDesiredName({ step: 2, title });
+    const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths, { step: stepCount++, title });
+    const inputName = await getDesiredName({ step: stepCount++, title });
+    const dynamicOptionTokens = await getTemplatePathDynamicOptions(selectedTemplatePath);
 
-    const templateUsesDynamicOptions = await templatePathContainsDynamicOptions(selectedTemplatePath);
-
-    let dynamicOptions = "";
-
-    if (templateUsesDynamicOptions) {
-        dynamicOptions = await getDynamicOptions({ step: 3, title });
+    const dynamicOptions: IDynamicOptions[] = [];
+    for (const option of dynamicOptionTokens) {
+        dynamicOptions.push({
+            input: await getDynamicOption(option, { step: stepCount++, title }),
+            token: option,
+        });
     }
 
     return {

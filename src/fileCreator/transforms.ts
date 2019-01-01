@@ -2,6 +2,7 @@
 
 import * as handlebars from "handlebars";
 import * as _ from "lodash";
+import { IDynamicOptions } from "../inputs";
 
 let handlebarsInitialized = false;
 
@@ -34,26 +35,24 @@ export function initializeHandlebars() {
   });
 }
 
-export function replaceTemplateContent(rawContent: string, name: string, dynamicOptions: string): string {
+export function replaceTemplateContent(rawContent: string, name: string, dynamicOptions: IDynamicOptions[]): string {
 
   if (!handlebarsInitialized) {
     initializeHandlebars();
     handlebarsInitialized = true;
   }
 
-  let content = rawContent;
-
-  if (dynamicOptions) {
-    content = replaceDynamicOptions(content, dynamicOptions);
-  }
-
-  const template = handlebars.compile(content);
+  const template = handlebars.compile(rawContent);
 
   const context = {
     name,
   };
 
-  content = template(context);
+  dynamicOptions.map(opt => {
+    context[cleanToken(opt.token)] = opt.input;
+  });
+
+  const content = template(context);
 
   return content;
 }
@@ -79,19 +78,6 @@ function replaceAll(str, find, replace): string {
   return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
 }
 
-function replaceDynamicOptions(content: string, dynamicOptions: string): string {
-
-  let result = content;
-
-  const options = dynamicOptions.split(";");
-
-  for (let i = 0; i < options.length; i++) {
-
-      const opt = options[i];
-      const handle = "{{$" + (i + 1) + "}}";
-
-      result = result.replace(handle, opt);
-  }
-
-  return result;
+function cleanToken(token): string {
+  return token.replace("{{", "").replace("}}", "");
 }

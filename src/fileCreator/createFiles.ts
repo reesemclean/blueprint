@@ -6,12 +6,11 @@ import * as path from "path";
 
 import { WriteConflictError } from "../errors";
 import { getTemplateManifestAtTemplateDirectory } from "../getTemplateManifest";
+import { IDynamicOptions, IUserInput } from "../inputs";
 import { getFolderNamesAtDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
 import { replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
-
-import { IUserInput } from "../inputs";
 
 export async function createFiles(userInput: IUserInput, inDirectory: string): Promise<void> {
 
@@ -60,7 +59,7 @@ async function createFilesFromTemplateInDirectory(
   templatePath: string,
   inDirectory: string,
   name: string,
-  dynamicOptions: string): Promise<void> {
+  dynamicOptions: IDynamicOptions[]): Promise<void> {
 
   await createFilesForTemplateFolder(templatePath, inDirectory, name, dynamicOptions);
 
@@ -84,7 +83,7 @@ async function createFilesForTemplateFolder(
   templateFolderPath: string,
   inDirectory: string,
   name: string,
-  dynamicOptions: string): Promise<void> {
+  dynamicOptions: IDynamicOptions[]): Promise<void> {
 
   const templateFilesInFolder = await getTemplateFileNamesAtTemplateDirectory(templateFolderPath);
 
