@@ -59,6 +59,47 @@ suite("Extension Tests", () => {
         });
     };
 
+    const runTestForTemplateWithDynamicOptionsNamed = async (templateName: string) => {
+        const directoryPath = path.join(outPath, templateName);
+
+        const dynamicOptions: IDynamicOptions[] = [];
+
+        dynamicOptions.push({
+            input: "test",
+            token: "{{$test}}"
+        });
+
+        dynamicOptions.push({
+            input: "fancy",
+            token: "{{$status}}"
+        });
+
+        const userInput: IUserInput = {
+            inputName: "MY User Input",
+            selectedTemplatePath: path.join(templatesPath, templateName),
+            dynamicOptions,
+        };
+
+        return createFiles(userInput, directoryPath).then(() => {
+            // Ensure at least one file was created
+            assert.equal(fs.readdirSync(expectedOutputPath).length > 0, true);
+
+            const options = {
+                compareContent: true,
+                noDiffSet: true
+            };
+            const result = dirCompare.compareSync(
+                path.join(expectedOutputPath, templateName),
+                directoryPath,
+                options
+            );
+            assert.equal(result.same, true);
+        }).catch(e => {
+            console.log(e);
+            throw e;
+        });
+    };
+
     // Defines a Mocha unit test
     test("includesImages", (done) => {
         beforeEach();
@@ -77,6 +118,13 @@ suite("Extension Tests", () => {
     test("transforms", (done) => {
         beforeEach();
         runTestForTemplateNamed("transforms").then(() => {
+            done();
+        });
+    });
+
+    test("dynamicTemplateVariables", (done) => {
+        beforeEach();
+        runTestForTemplateWithDynamicOptionsNamed("dynamicTemplateVariables").then(() => {
             done();
         });
     });
