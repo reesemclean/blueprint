@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { WriteConflictError } from "../errors";
 import { getTemplateManifestAtTemplateDirectory } from "../getTemplateManifest";
-import { DynamicTemplateValues, IUserInput } from "../inputs";
+import { IDynamicTemplateValues, IUserInput } from "../inputs";
 import { getFolderNamesAtDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
@@ -59,7 +59,7 @@ async function createFilesFromTemplateInDirectory(
   templatePath: string,
   inDirectory: string,
   name: string,
-  dynamicTemplateValues: DynamicTemplateValues): Promise<void> {
+  dynamicTemplateValues: IDynamicTemplateValues): Promise<void> {
 
   await createFilesForTemplateFolder(templatePath, inDirectory, name, dynamicTemplateValues);
 
@@ -83,7 +83,7 @@ async function createFilesForTemplateFolder(
   templateFolderPath: string,
   inDirectory: string,
   name: string,
-  dynamicTemplateValues: DynamicTemplateValues): Promise<void> {
+  dynamicTemplateValues: IDynamicTemplateValues): Promise<void> {
 
   const templateFilesInFolder = await getTemplateFileNamesAtTemplateDirectory(templateFolderPath);
 

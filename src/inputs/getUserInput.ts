@@ -8,7 +8,7 @@ import { getSelectedTemplatePath } from "./getSelectedTemplatePath";
 export interface IUserInput {
     inputName: string;
     selectedTemplatePath: string;
-    dynamicTemplateValues: DynamicTemplateValues;
+    dynamicTemplateValues: IDynamicTemplateValues;
 }
 
 export interface IMultiStepData {
@@ -16,10 +16,10 @@ export interface IMultiStepData {
     title: string;
 }
 
-export type DynamicTemplateValues = {
+export interface IDynamicTemplateValues {
     [token: string]: {
         userInput: string;
-    }
+    };
 }
 
 export async function getUserInput(availableTemplatePaths: string[]): Promise<IUserInput> {
@@ -29,12 +29,12 @@ export async function getUserInput(availableTemplatePaths: string[]): Promise<IU
     const inputName = await getDesiredName({ step: stepCount++, title });
     const dynamicTokens = await getTemplatePathDynamicTokens(selectedTemplatePath);
 
-    const dynamicTemplateValues: DynamicTemplateValues = {};
+    const dynamicTemplateValues: IDynamicTemplateValues = {};
     for (const option of dynamicTokens) {
         const userInput = await getDynamicTemplateInputForToken(option, { step: stepCount++, title });
         dynamicTemplateValues[option] = {
-            userInput
-        }
+            userInput,
+        };
     }
 
     return {

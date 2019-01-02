@@ -2,7 +2,7 @@
 
 import * as handlebars from "handlebars";
 import * as _ from "lodash";
-import { DynamicTemplateValues } from "../inputs";
+import { IDynamicTemplateValues } from "../inputs";
 
 let handlebarsInitialized = false;
 
@@ -35,7 +35,10 @@ export function initializeHandlebars() {
   });
 }
 
-export function replaceTemplateContent(rawContent: string, name: string, dynamicTemplateValues: DynamicTemplateValues): string {
+export function replaceTemplateContent(
+  rawContent: string,
+  name: string,
+  dynamicTemplateValues: IDynamicTemplateValues): string {
 
   if (!handlebarsInitialized) {
     initializeHandlebars();
@@ -51,7 +54,7 @@ export function replaceTemplateContent(rawContent: string, name: string, dynamic
 
   const context = {
     name,
-    ...dynamicTemplateInputMap
+    ...dynamicTemplateInputMap,
   };
 
   const content = template(context);
