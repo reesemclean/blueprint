@@ -54,28 +54,6 @@ Examples:
 ]
 ```
 
-## Dynamic Template Variables
-
-Dynamic Template Variables provide template replacements at the time of file creation. The dynamic replacement token should conform to the format of `{{$1}}` where `1` will be replaced by the first input in the delimited list. The number in the token represents the position of the replacement.
-
-When a dynamic token is detected, a third dialog will appear during the `New file from template` workflow. This dialog will take a semicolon delimited list of inputs. Each input will be match to the appropriate replacement token.
-
-Example: Given the input -> `Foo;Bar`
-
-This template:
-```ts
-function showMyDynamicOptions() {
-    print("{{$1}} comes before {{$2}}");
-}
-```
-
-Will produce this result:
-```ts
-function showMyDynamicOptions() {
-    print("Foo comes before Bar");
-}
-```
-
 ## Available Transforms
 
 | Helper Name    | Example Use In Templates | Example Use in File/Folder Names | Sample Result           |
@@ -89,6 +67,20 @@ function showMyDynamicOptions() {
 | upperSnakeCase | {{upperSnakeCase name}}  | \_\_upperSnakeCase_name\_\_      | THIS_IS_UPPER_SNAKE_CASE|
 | kebabCase      | {{kebabCase name}}       | \_\_kebabCase_name\_\_           | this-is-kebab-case      |
 | lowerDotCase   | {{lowerDotCase name}}    | \_\_lowerDotCase_name\_\_        | this.is.lower.dot.case  |
+
+## Dynamic Template Variables
+
+Dynamic Template Variables provide template replacements at the time of file creation in addition to the standard name. The dynamic replacement token should conform to the format of `{{ $<inputName> }}` (we will search for a `$` within `{{ }}`).
+
+For each dynamic token detected, a dialog will appear during the `New file from template` workflow. This input will be substituted into the template at the appropriate places.
+
+For exapmle this template:
+```ts
+function myFunction() {
+    print("{{ $input }} comes before {{$2}} but not before {{ uppercase $input }}");
+}
+```
+will show two additional dialogs. One for `$input` and one for `$2`. The same transforms that can be used on name can be used for dynamic template. Dynamic templates currently do not work within filenames.
 
 ## manifest.json
 
@@ -109,6 +101,10 @@ We will continue to add new templates that we think may be helpful to use!
 ## Known Issues
 
 ## Release Notes
+
+### 3.0.0
+
+* Adds support for Dynamic Template Variables. You can now have multiple unique tokens within your templates that will get replaced with user input during file creation.
 
 ### 2.3.0
 
