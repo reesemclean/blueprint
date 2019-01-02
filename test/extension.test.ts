@@ -66,12 +66,17 @@ suite("Extension Tests", () => {
 
         dynamicOptions.push({
             input: "test",
-            token: "{{$test}}"
+            token: "$test"
         });
 
         dynamicOptions.push({
             input: "fancy",
-            token: "{{$status}}"
+            token: "$status"
+        });
+
+        dynamicOptions.push({
+            input: "nice",
+            token: "$emotion"
         });
 
         const userInput: IUserInput = {
