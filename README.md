@@ -54,6 +54,28 @@ Examples:
 ]
 ```
 
+## Dynamic Template Variables
+
+Dynamic Template Variables provide template replacements at the time of file creation. The dynamic replacement token should conform to the format of `{{$1}}` where `1` will be replaced by the first input in the delimited list. The number in the token represents the position of the replacement.
+
+When a dynamic token is detected, a third dialog will appear during the `New file from template` workflow. This dialog will take a semicolon delimited list of inputs. Each input will be match to the appropriate replacement token.
+
+Example: Given the input -> `Foo;Bar`
+
+This template:
+```ts
+function showMyDynamicOptions() {
+    print("{{$1}} comes before {{$2}}");
+}
+```
+
+Will produce this result:
+```ts
+function showMyDynamicOptions() {
+    print("Foo comes before Bar");
+}
+```
+
 ## Available Transforms
 
 | Helper Name    | Example Use In Templates | Example Use in File/Folder Names | Sample Result           |

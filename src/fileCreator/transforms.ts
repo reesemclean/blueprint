@@ -2,6 +2,7 @@
 
 import * as handlebars from "handlebars";
 import * as _ from "lodash";
+import { IDynamicOptions } from "../inputs";
 
 let handlebarsInitialized = false;
 
@@ -34,7 +35,7 @@ export function initializeHandlebars() {
   });
 }
 
-export function replaceTemplateContent(rawContent: string, name: string): string {
+export function replaceTemplateContent(rawContent: string, name: string, dynamicOptions: IDynamicOptions[]): string {
 
   if (!handlebarsInitialized) {
     initializeHandlebars();
@@ -47,8 +48,14 @@ export function replaceTemplateContent(rawContent: string, name: string): string
     name,
   };
 
+  dynamicOptions.forEach(opt => {
+    context[opt.token] = opt.input;
+  });
+
   const content = template(context);
+
   return content;
+
 }
 
 export function replaceStringUsingTransforms(stringToReplace: string, name: string): string {

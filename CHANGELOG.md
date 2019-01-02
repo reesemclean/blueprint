@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Adds ability to provide dynamic template replacements at the time of file creation
+
 ## [2.3.0 - 2018-11-09]
 
 * Adds UPPER_SNAKE_CASE transform (__upperSnakeCase_name__ or {{upperSnakeCase name}})

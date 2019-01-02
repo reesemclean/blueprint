@@ -2,10 +2,9 @@
 
 import { Disposable, window } from "vscode";
 
-import { CancelError, NoNameGivenError } from "../errors";
 import { IMultiStepData } from "./getUserInput";
 
-export async function getDesiredName(multiStep: IMultiStepData): Promise<string> {
+export async function getDynamicOption(token: string, multiStep: IMultiStepData): Promise<string> {
   const disposables: Disposable[] = [];
 
   try {
@@ -15,19 +14,12 @@ export async function getDesiredName(multiStep: IMultiStepData): Promise<string>
       input.title = multiStep.title;
       input.ignoreFocusOut = true;
       input.value = "";
-      input.prompt = "Enter a value to be used within your template.";
+      input.prompt = "Enter value for " + token + ".";
 
       disposables.push(
         input.onDidAccept(() => {
-          const name = input.value;
-          if (name === undefined) {
-            throw new CancelError();
-          }
-          if (!name) {
-            throw new NoNameGivenError();
-          }
 
-          resolve(name);
+          resolve(input.value);
           input.dispose();
         }),
       );
