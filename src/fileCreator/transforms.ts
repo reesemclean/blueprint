@@ -2,7 +2,7 @@
 
 import * as handlebars from "handlebars";
 import * as _ from "lodash";
-import { IDynamicOptions } from "../inputs";
+import { DynamicTemplateValues } from "../inputs";
 
 let handlebarsInitialized = false;
 
@@ -35,7 +35,7 @@ export function initializeHandlebars() {
   });
 }
 
-export function replaceTemplateContent(rawContent: string, name: string, dynamicOptions: IDynamicOptions[]): string {
+export function replaceTemplateContent(rawContent: string, name: string, dynamicTemplateValues: DynamicTemplateValues): string {
 
   if (!handlebarsInitialized) {
     initializeHandlebars();
@@ -44,13 +44,15 @@ export function replaceTemplateContent(rawContent: string, name: string, dynamic
 
   const template = handlebars.compile(rawContent);
 
+  const dynamicTemplateInputMap = Object.keys(dynamicTemplateValues).reduce((prev, value) => {
+    prev[value] = dynamicTemplateValues[value].userInput;
+    return prev;
+  }, {});
+
   const context = {
     name,
+    ...dynamicTemplateInputMap
   };
-
-  dynamicOptions.forEach(opt => {
-    context[opt.token] = opt.input;
-  });
 
   const content = template(context);
 

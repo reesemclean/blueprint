@@ -6,7 +6,7 @@ import * as path from "path";
 
 import { WriteConflictError } from "../errors";
 import { getTemplateManifestAtTemplateDirectory } from "../getTemplateManifest";
-import { IDynamicOptions, IUserInput } from "../inputs";
+import { DynamicTemplateValues, IUserInput } from "../inputs";
 import { getFolderNamesAtDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
@@ -24,7 +24,7 @@ export async function createFiles(userInput: IUserInput, inDirectory: string): P
     userInput.selectedTemplatePath,
     temporaryDirectory,
     userInput.inputName,
-    userInput.dynamicOptions,
+    userInput.dynamicTemplateValues,
   );
 
   let containerFolderName = "";
@@ -59,9 +59,9 @@ async function createFilesFromTemplateInDirectory(
   templatePath: string,
   inDirectory: string,
   name: string,
-  dynamicOptions: IDynamicOptions[]): Promise<void> {
+  dynamicTemplateValues: DynamicTemplateValues): Promise<void> {
 
-  await createFilesForTemplateFolder(templatePath, inDirectory, name, dynamicOptions);
+  await createFilesForTemplateFolder(templatePath, inDirectory, name, dynamicTemplateValues);
 
   const templateFoldersInFolder = await getFolderNamesAtDirectory(templatePath);
 
@@ -72,7 +72,7 @@ async function createFilesFromTemplateInDirectory(
       const fullFolderPath = path.join(templatePath, templateFolderName);
       const directoryToCreateIn = path.join(inDirectory, folderName);
       await fs.mkdir(directoryToCreateIn);
-      await createFilesFromTemplateInDirectory(fullFolderPath, directoryToCreateIn, name, dynamicOptions);
+      await createFilesFromTemplateInDirectory(fullFolderPath, directoryToCreateIn, name, dynamicTemplateValues);
 
     }),
   );
@@ -83,7 +83,7 @@ async function createFilesForTemplateFolder(
   templateFolderPath: string,
   inDirectory: string,
   name: string,
-  dynamicOptions: IDynamicOptions[]): Promise<void> {
+  dynamicTemplateValues: DynamicTemplateValues): Promise<void> {
 
   const templateFilesInFolder = await getTemplateFileNamesAtTemplateDirectory(templateFolderPath);
 
@@ -98,7 +98,7 @@ async function createFilesForTemplateFolder(
           path.join(templateFolderPath, templateFilePath),
           "utf8",
         );
-        const content = replaceTemplateContent(rawTemplateContent, name, dynamicOptions);
+        const content = replaceTemplateContent(rawTemplateContent, name, dynamicTemplateValues);
 
         await fs.writeFile(destinationPath, content);
       } catch (e) {

@@ -1,14 +1,14 @@
 "use strict";
 
-import { getTemplatePathDynamicOptions } from "../utilities/checkDynamicOptionSupport";
+import { getTemplatePathDynamicTokens } from "../utilities/dynamicTokenSearch";
 import { getDesiredName } from "./getDesiredName";
-import { getDynamicOption } from "./getDynamicOptions";
+import { getDynamicTemplateInputForToken } from "./getDynamicTokenInput";
 import { getSelectedTemplatePath } from "./getSelectedTemplatePath";
 
 export interface IUserInput {
     inputName: string;
     selectedTemplatePath: string;
-    dynamicOptions: IDynamicOptions[];
+    dynamicTemplateValues: DynamicTemplateValues;
 }
 
 export interface IMultiStepData {
@@ -16,9 +16,10 @@ export interface IMultiStepData {
     title: string;
 }
 
-export interface IDynamicOptions {
-    token: string;
-    input: string;
+export type DynamicTemplateValues = {
+    [token: string]: {
+        userInput: string;
+    }
 }
 
 export async function getUserInput(availableTemplatePaths: string[]): Promise<IUserInput> {
@@ -26,18 +27,18 @@ export async function getUserInput(availableTemplatePaths: string[]): Promise<IU
     const title = "New File from Template";
     const selectedTemplatePath = await getSelectedTemplatePath(availableTemplatePaths, { step: stepCount++, title });
     const inputName = await getDesiredName({ step: stepCount++, title });
-    const dynamicOptionTokens = await getTemplatePathDynamicOptions(selectedTemplatePath);
+    const dynamicTokens = await getTemplatePathDynamicTokens(selectedTemplatePath);
 
-    const dynamicOptions: IDynamicOptions[] = [];
-    for (const option of dynamicOptionTokens) {
-        dynamicOptions.push({
-            input: await getDynamicOption(option, { step: stepCount++, title }),
-            token: option,
-        });
+    const dynamicTemplateValues: DynamicTemplateValues = {};
+    for (const option of dynamicTokens) {
+        const userInput = await getDynamicTemplateInputForToken(option, { step: stepCount++, title });
+        dynamicTemplateValues[option] = {
+            userInput
+        }
     }
 
     return {
-        dynamicOptions,
+        dynamicTemplateValues,
         inputName,
         selectedTemplatePath,
     };

@@ -4,7 +4,7 @@ import { Disposable, window } from "vscode";
 
 import { IMultiStepData } from "./getUserInput";
 
-export async function getDynamicOption(token: string, multiStep: IMultiStepData): Promise<string> {
+export async function getDynamicTemplateInputForToken(token: string, multiStep: IMultiStepData): Promise<string> {
   const disposables: Disposable[] = [];
 
   try {
