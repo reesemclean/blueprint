@@ -18,7 +18,9 @@ export async function getTemplatePathDynamicOptions(templatePath: string): Promi
 }
 
 async function findDynamicOptionTokensInFile(filePath: string): Promise<string[]> {
-  const regExp = /{{\$(.*?)}}/gm;
+  // Capture the token that starts with $, between {{ and }}.
+  // Ignore additional characters infront of the $ and whitespace infront of }}
+  const regExp = /{{.*?(\$.*?)\s?}}/g;
   const result: string[] = [];
 
   try {
@@ -29,11 +31,12 @@ async function findDynamicOptionTokensInFile(filePath: string): Promise<string[]
 
     let match = regExp.exec(rawTemplateContent);
     while (match) {
-      result.push(match[0]);
+      // match[0] will include the entire {{ uppercase $XXXX }} string
+      // match[1] will be just the capture group: $XXXX
+      result.push(match[1]);
       match = regExp.exec(rawTemplateContent);
     }
   } catch (e) {
-
     return result;
   }
 
