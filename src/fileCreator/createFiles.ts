@@ -23,7 +23,7 @@ export async function createFiles(userInput: IUserInput, inDirectory: string): P
   await createFilesFromTemplateInDirectory(
     userInput.selectedTemplatePath,
     temporaryDirectory,
-    userInput.inputName,
+    name,
     userInput.dynamicTemplateValues,
   );
 
