@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+### [Unreleased]
+
+## [3.0.1 - 2019-01-17]
+
+* Adds ability to use suffixesToIgnoreInInput without createFilesInFolderWithPattern
 
 ## [3.0.0 - 2019-01-02]
 
