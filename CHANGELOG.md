@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Ability to choose from template versions (as sub-folders) defined in manifest.json
+
 ## [3.0.0 - 2019-01-02]
 
 * Adds ability to provide dynamic template replacements at the time of file creation
