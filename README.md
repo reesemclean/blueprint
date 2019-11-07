@@ -59,14 +59,26 @@ Examples:
 | Helper Name    | Example Use In Templates | Example Use in File/Folder Names | Sample Result           |
 |----------------|--------------------------|----------------------------------|-------------------------|
 | {none}         | {{name}}                 | \_\_name\_\_                     | {No transform applied}  |
-| upperCase      | {{upperCase name}}       | \_\_upperCase_name\_\_           | THIS IS UPPERCASE         |
-| lowerCase      | {{lowerCase name}}       | \_\_lowerCase_name\_\_           | this is lowercase         |
+| upperCase      | {{upperCase name}}       | \_\_upperCase_name\_\_           | THIS IS UPPERCASE       |
+| lowerCase      | {{lowerCase name}}       | \_\_lowerCase_name\_\_           | this is lowercase       |
 | camelCase      | {{camelCase name}}       | \_\_camelCase_name\_\_           | thisIsCamelCase         |
 | pascalCase     | {{pascalCase name}}      | \_\_pascalCase_name\_\_          | ThisIsPascalCase        |
 | snakeCase      | {{snakeCase name}}       | \_\_snakeCase_name\_\_           | this_is_snake_case      |
 | upperSnakeCase | {{upperSnakeCase name}}  | \_\_upperSnakeCase_name\_\_      | THIS_IS_UPPER_SNAKE_CASE|
 | kebabCase      | {{kebabCase name}}       | \_\_kebabCase_name\_\_           | this-is-kebab-case      |
 | lowerDotCase   | {{lowerDotCase name}}    | \_\_lowerDotCase_name\_\_        | this.is.lower.dot.case  |
+
+## Date/Time Template Variables
+
+| Variable Name  | Example Use In Templates | Example Use in File/Folder Names | Sample Result           |
+|----------------|--------------------------|----------------------------------|-------------------------|
+| currentYear    | {{currentYear}}          | \_\_currentYear\_\_              | YYYY                    |
+| currentMonth   | {{currentMonth}}         | \_\_currentMonth\_\_             | MM                      |
+| currentDate    | {{currentDate}}          | \_\_currentDate\_\_              | DD                      |
+| currentDay     | {{currentDay}}           | \_\_currentDay\_\_               | d                       |
+| currentHour    | {{currentHour}}          | \_\_currentHour\_\_              | HH                      |
+| currentMin     | {{currentMin}}           | \_\_currentMin\_\_               | mm                      |
+| currentSec     | {{currentSec}}           | \_\_currentSec\_\_               | ss                      |
 
 ## Dynamic Template Variables
 

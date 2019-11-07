@@ -5,6 +5,11 @@ import * as _ from "lodash";
 import { IDynamicTemplateValues } from "../inputs";
 
 let handlebarsInitialized = false;
+let currentDate: Date = new Date();
+
+export function setCurrentDate(date: Date) {
+  currentDate = date;
+}
 
 export function initializeHandlebars() {
   handlebars.registerHelper({
@@ -31,6 +36,27 @@ export function initializeHandlebars() {
     },
     upperSnakeCase: (input) => {
       return _.snakeCase(input).toUpperCase();
+    },
+    currentYear: (input) => {
+      return getYear(currentDate);
+    },
+    currentMonth: (input) => {
+      return getMonth(currentDate);
+    },
+    currentDate: (input) => {
+      return getDayOfMonth(currentDate);
+    },
+    currentDay: (input) => {
+      return getDay(currentDate);
+    },
+    currentHour: (input) => {
+      return getHours(currentDate);
+    },
+    currentMin: (input) => {
+      return getMinutes(currentDate);
+    },
+    currentSec: (input) => {
+      return getSeconds(currentDate);
     },
   });
 }
@@ -73,6 +99,13 @@ export function replaceStringUsingTransforms(stringToReplace: string, name: stri
   result = replaceAll(result, "__upperCase_name__", _.upperCase(name));
   result = replaceAll(result, "__lowerCase_name__", _.lowerCase(name));
   result = replaceAll(result, "__upperSnakeCase_name__", _.snakeCase(name).toUpperCase());
+  result = replaceAll(result, "__currentYear__", getYear(currentDate));
+  result = replaceAll(result, "__currentMonth__", getMonth(currentDate));
+  result = replaceAll(result, "__currentDate__", getDayOfMonth(currentDate));
+  result = replaceAll(result, "__currentDay__", getDay(currentDate));
+  result = replaceAll(result, "__currentHour__", getHours(currentDate));
+  result = replaceAll(result, "__currentMin__", getMinutes(currentDate));
+  result = replaceAll(result, "__currentSec__", getSeconds(currentDate));
   return result;
 }
 
@@ -82,4 +115,39 @@ function escapeRegExp(str): string {
 
 function replaceAll(str, find, replace): string {
   return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
+}
+
+function getYear(date: Date): string {
+  return date.getFullYear().toString();
+}
+
+function getMonth(date: Date): string {
+  return padDateComponentToTwoChars((date.getMonth() + 1).toString());
+}
+
+function getDayOfMonth(date: Date): string {
+  return padDateComponentToTwoChars(date.getDate().toString());
+}
+
+function getDay(date: Date): string {
+  return date.getDay().toString();
+}
+
+function getHours(date: Date): string {
+  return padDateComponentToTwoChars(date.getHours().toString());
+}
+
+function getMinutes(date: Date): string {
+  return padDateComponentToTwoChars(date.getMinutes().toString());
+}
+
+function getSeconds(date: Date): string {
+  return padDateComponentToTwoChars(date.getSeconds().toString());
+}
+
+function padDateComponentToTwoChars(str: string): string {
+  if (str.length < 2) {
+    str = '0' + str;
+  }
+  return str;
 }

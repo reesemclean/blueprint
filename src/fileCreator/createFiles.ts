@@ -10,7 +10,7 @@ import { IDynamicTemplateValues, IUserInput } from "../inputs";
 import { getFolderNamesAtDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
-import { replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
+import { setCurrentDate, replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
 
 export async function createFiles(userInput: IUserInput, inDirectory: string): Promise<void> {
 
@@ -19,6 +19,8 @@ export async function createFiles(userInput: IUserInput, inDirectory: string): P
   const name = sanitizedName(userInput.inputName, options);
 
   const temporaryDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "blueprint-"));
+
+  setCurrentDate(new Date());
 
   await createFilesFromTemplateInDirectory(
     userInput.selectedTemplatePath,
