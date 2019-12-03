@@ -76,6 +76,7 @@ function shouldIgnoreFileName(fileName: string): boolean {
     ".Trashes",
     "ehthumbs.db",
     "Thumbs.db",
+    ".git",
     constants.MANIFEST_FILE_NAME,
   ];
 
