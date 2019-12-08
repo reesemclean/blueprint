@@ -20,4 +20,4 @@ before_script:
 script:
   - bundle exec danger
   - yarn lint
-  - yarn test --silent
+  - yarn test
