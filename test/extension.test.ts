@@ -28,8 +28,8 @@ suite("Extension Tests", () => {
         fs.removeSync(outPath);
     };
 
-    const runTestForTemplateNamed = async (templateName: string, dynamicTemplateValues: IDynamicTemplateValues) => {
-        const directoryPath = path.join(outPath, templateName);
+    const runTestForTemplateNamed = async (templateName: string, outName: string, dynamicTemplateValues: IDynamicTemplateValues, testDate: Date) => {
+        const directoryPath = path.join(outPath, outName);
 
         const userInput: IUserInput = {
             inputName: "MY User Input",
@@ -37,7 +37,7 @@ suite("Extension Tests", () => {
             dynamicTemplateValues,
         };
 
-        return createFiles(userInput, directoryPath).then(() => {
+        return createFiles(userInput, directoryPath, testDate).then(() => {
             // Ensure at least one file was created
             assert.equal(fs.readdirSync(expectedOutputPath).length > 0, true);
 
@@ -46,7 +46,7 @@ suite("Extension Tests", () => {
                 noDiffSet: true
             };
             const result = dirCompare.compareSync(
-                path.join(expectedOutputPath, templateName),
+                path.join(expectedOutputPath, outName),
                 directoryPath,
                 options
             );
@@ -60,21 +60,21 @@ suite("Extension Tests", () => {
     // Defines a Mocha unit test
     test("includesImages", (done) => {
         beforeEach();
-        runTestForTemplateNamed("includesImages", {}).then(() => {
+        runTestForTemplateNamed("includesImages", "includesImages", {}, new Date()).then(() => {
             done();
         });
     });
 
     test("nestedFolders", (done) => {
         beforeEach();
-        runTestForTemplateNamed("nestedFolders", {}).then(() => {
+        runTestForTemplateNamed("nestedFolders", "nestedFolders", {}, new Date()).then(() => {
             done();
         });
     });
 
     test("transforms", (done) => {
         beforeEach();
-        runTestForTemplateNamed("transforms", {}).then(() => {
+        runTestForTemplateNamed("transforms", "transforms", {}, new Date()).then(() => {
             done();
         });
     });
@@ -94,7 +94,28 @@ suite("Extension Tests", () => {
             }
         };
 
-        runTestForTemplateNamed("dynamicTemplateVariables", dynamicTemplateValues).then(() => {
+        runTestForTemplateNamed("dynamicTemplateVariables", "dynamicTemplateVariables", dynamicTemplateValues, new Date()).then(() => {
+            done();
+        });
+    });
+
+    test("datetime-simple", (done) => {
+        beforeEach();
+
+        const testDate = new Date("1965-10-31 22:43:54");
+
+        runTestForTemplateNamed("datetime", "datetime-simple", {}, testDate).then(() => {
+            done();
+        });
+    });
+
+    test("datetime-zeropadding", (done) => {
+        beforeEach();
+
+        const testDate = new Date("0100-02-03 04:05:06");
+        testDate.setFullYear(1);
+
+        runTestForTemplateNamed("datetime", "datetime-zeropadding", {}, testDate).then(() => {
             done();
         });
     });

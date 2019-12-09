@@ -12,7 +12,7 @@ import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplat
 import { sanitizedName } from "./inputSanitizer";
 import { setCurrentDate, replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
 
-export async function createFiles(userInput: IUserInput, inDirectory: string): Promise<void> {
+export async function createFiles(userInput: IUserInput, inDirectory: string, date: Date): Promise<void> {
 
   const options = getTemplateManifestAtTemplateDirectory(userInput.selectedTemplatePath);
 
@@ -20,7 +20,7 @@ export async function createFiles(userInput: IUserInput, inDirectory: string): P
 
   const temporaryDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "blueprint-"));
 
-  setCurrentDate(new Date());
+  setCurrentDate(date);
 
   await createFilesFromTemplateInDirectory(
     userInput.selectedTemplatePath,

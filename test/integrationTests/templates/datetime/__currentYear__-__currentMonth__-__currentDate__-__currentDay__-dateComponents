@@ -1,0 +1,4 @@
+Year:         {{currentYear}}
+Month:        {{currentMonth}}
+Date:         {{currentDate}}
+Day of week:  {{currentDay}}
