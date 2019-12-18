@@ -16,6 +16,27 @@ export function initializeHandlebars() {
     camelCase: (input) => {
       return _.camelCase(input);
     },
+    currentDate: (input) => {
+      return getDayOfMonth(currentDate);
+    },
+    currentDay: (input) => {
+      return getDay(currentDate);
+    },
+    currentHour: (input) => {
+      return getHours(currentDate);
+    },
+    currentMin: (input) => {
+      return getMinutes(currentDate);
+    },
+    currentMonth: (input) => {
+      return getMonth(currentDate);
+    },
+    currentSec: (input) => {
+      return getSeconds(currentDate);
+    },
+    currentYear: (input) => {
+      return getYear(currentDate);
+    },
     kebabCase: (input) => {
       return _.kebabCase(input);
     },
@@ -36,27 +57,6 @@ export function initializeHandlebars() {
     },
     upperSnakeCase: (input) => {
       return _.snakeCase(input).toUpperCase();
-    },
-    currentYear: (input) => {
-      return getYear(currentDate);
-    },
-    currentMonth: (input) => {
-      return getMonth(currentDate);
-    },
-    currentDate: (input) => {
-      return getDayOfMonth(currentDate);
-    },
-    currentDay: (input) => {
-      return getDay(currentDate);
-    },
-    currentHour: (input) => {
-      return getHours(currentDate);
-    },
-    currentMin: (input) => {
-      return getMinutes(currentDate);
-    },
-    currentSec: (input) => {
-      return getSeconds(currentDate);
     },
   });
 }
@@ -147,7 +147,7 @@ function getSeconds(date: Date): string {
 
 function padDateComponentToTwoChars(str: string): string {
   if (str.length < 2) {
-    str = '0' + str;
+    str = "0" + str;
   }
   return str;
 }

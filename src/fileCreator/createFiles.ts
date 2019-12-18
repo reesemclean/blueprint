@@ -10,7 +10,7 @@ import { IDynamicTemplateValues, IUserInput } from "../inputs";
 import { getFolderNamesAtDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { getTemplateFileNamesAtTemplateDirectory } from "../utilities/getTemplateFilesAndFolders";
 import { sanitizedName } from "./inputSanitizer";
-import { setCurrentDate, replaceStringUsingTransforms, replaceTemplateContent } from "./transforms";
+import { replaceStringUsingTransforms, replaceTemplateContent, setCurrentDate } from "./transforms";
 
 export async function createFiles(userInput: IUserInput, inDirectory: string, date: Date): Promise<void> {
 
