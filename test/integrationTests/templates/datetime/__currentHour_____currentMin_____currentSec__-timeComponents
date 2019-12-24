@@ -1,0 +1,3 @@
+Hour:         {{currentHour}}
+Minute:       {{currentMin}}
+Second:       {{currentSec}}

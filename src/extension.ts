@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     try {
       const userInput = await getUserInput(templateFolderRawPaths);
-      await createFiles(userInput, directoryPath);
+      await createFiles(userInput, directoryPath, new Date());
     } catch (error) {
       handleError(error);
     }
