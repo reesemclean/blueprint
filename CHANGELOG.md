@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+* Adds ability to insert current date/time into templates at the time of file creation.
+
 ## [3.0.0 - 2019-01-02]
 
 * Adds ability to provide dynamic template replacements at the time of file creation
