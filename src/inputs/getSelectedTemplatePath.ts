@@ -87,7 +87,10 @@ export function expandFolderPath(folderPath: string): string {
     const subPath = normalizedPath.substring(1, normalizedPath.length);
     result = path.join(home, subPath);
   } else {
-    result = path.resolve(workspace.rootPath, folderPath);
+    if (!workspace.workspaceFolders) {
+      throw new Error("No open folder found in workspace")
+    }
+    result = path.resolve(workspace.workspaceFolders[0].uri.fsPath, folderPath);
   }
 
   return result;
