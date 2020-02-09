@@ -47,7 +47,7 @@ export function replaceTemplateContent(
 
   const template = handlebars.compile(rawContent);
 
-  const dynamicTemplateInputMap = Object.keys(dynamicTemplateValues).reduce((prev, value) => {
+  const dynamicTemplateInputMap = Object.keys(dynamicTemplateValues).reduce<{ [key: string]: string }>((prev, value) => {
     prev[value] = dynamicTemplateValues[value].userInput;
     return prev;
   }, {});
@@ -76,10 +76,10 @@ export function replaceStringUsingTransforms(stringToReplace: string, name: stri
   return result;
 }
 
-function escapeRegExp(str): string {
+function escapeRegExp(str: string): string {
   return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
 
-function replaceAll(str, find, replace): string {
+function replaceAll(str: string, find: string, replace: string): string {
   return str.replace(new RegExp(escapeRegExp(find), "g"), replace);
 }
