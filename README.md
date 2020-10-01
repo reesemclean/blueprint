@@ -14,7 +14,7 @@ Create custom file templates for your project.
   By default, the path is set to `blueprint-templates`. (See
   [Extension Settings](#Templates-Path) if you would like to change this)
 
-![Use Alt](https://zippy.gfycat.com/BrokenAdorableKinglet.gif)
+![Use Alt](./assets/blueprint-setup.gif)
 
 ### Add templates
 
@@ -22,7 +22,7 @@ Create custom file templates for your project.
   storage folder
 * Add a template to the group by creating a new file
 
-![Use Alt](https://zippy.gfycat.com/UnitedUnequaledFlounder.gif)
+![Use Alt](./assets/blueprint-add-templates.gif)
 
 ### Create from a template
 
@@ -30,7 +30,7 @@ Create custom file templates for your project.
 * Select "New file from template"
 * Enter a name
 
-![Use Alt](https://zippy.gfycat.com/AggravatingBreakableDwarfmongoose.gif)
+![Use Alt](./assets/blueprint-create-template.gif)
 
 ## Extension Settings
 
