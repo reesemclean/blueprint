@@ -79,6 +79,6 @@
     "dir-compare": "^1.4.0",
     "fs-extra": "^7.0.0",
     "handlebars": "^4.1.2",
-    "lodash": "^4.17.13"
+    "lodash": "^4.17.21"
   }
 }
